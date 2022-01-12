@@ -1,0 +1,35 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <div class="fadeIn first">
+      <img src="./assets/images/messageIcon2.png" id="icon" alt="User Icon"
+      style="color: black; max-height: 100px; max-width: 100px;"/>
+    </div>
+
+    <!-- Login Form -->
+    <form action="." method="post" class="form-horizontal justify-content-center">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="col">
+          <input type="text" class="form-control" id="username">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="col">
+          <input type="text" class="form-control" id="password">
+        </div>
+      </div>
+
+      <!-- TODO: Form errors -->
+
+      <input type="hidden" name="next" value="/"/>
+      <input type="submit" value="Log in" class="fadeIn fourth mt-4"/>
+    </form>
+
+    <!-- Remind Password -->
+    <div id="formFooter">
+      <a class="underlineHover" href="/register/">Sign up</a>
+    </div>
+
+  </div>
+</div>

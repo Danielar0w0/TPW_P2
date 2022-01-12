@@ -1,0 +1,64 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-dark py-4 px-4">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <a class="navbar-brand mt-2 mt-lg-0" href="/">
+        <img src="./assets/images/messageIcon.png" height="40"/>
+      </a>
+
+      <!-- TODO: Condition user is authenticated -->
+      <div *ngIf=true>
+        <ul class="navbar-nav px-4 mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/feed/">Feed</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/friends/">Friends</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/profile/">Your profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/messages/">Messages</a>
+          </li>
+
+          <!-- TODO: Condition user is admin -->
+          <div *ngIf=false>
+            <li class="nav-item">
+              <a class="nav-link text-light" href="/admin/">Admin panel</a>
+            </li>
+          </div>
+
+          <li class="nav-item px-4">
+            <a class="nav-link text-light" href="/logout/">Logout</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- TODO: Add search form -->
+
+    <!-- TODO: Dynamic profile photo -->
+    <div class="d-flex align-items-center">
+      <a class="d-flex align-items-center" href="/profile" id="navbarDropdownMenuLink" role="button"
+         aria-expanded="false">
+        <img src='./assets/images/user2.png' height="30px" class="rounded-circle"
+             onerror="this.onerror=null; this.src='./assets/images/user2.png'"/>
+      </a>
+
+      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        <li>
+          <a class="dropdown-item" href="/profile/">My profile</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="#">Settings</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
