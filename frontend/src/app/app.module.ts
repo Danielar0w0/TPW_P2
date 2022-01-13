@@ -18,6 +18,7 @@ import { CommentModalComponent } from './comment-modal/comment-modal.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import { MessagesWithComponent } from './messages-with/messages-with.component';
+import { CreatePostComponent } from './create-post/create-post.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MessagesWithComponent } from './messages-with/messages-with.component';
     EditProfileComponent,
     SearchResultsComponent,
     MessagesWithComponent,
+    CreatePostComponent,
   ],
   imports: [
     BrowserModule,

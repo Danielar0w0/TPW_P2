@@ -1,5 +1,21 @@
 <html ng-app>
 
-<!-- Navbar -->
-<app-navbar></app-navbar>
+<!-- TODO: Remove hardcoded conditions -->
+<div *ngIf="true">
+  <app-navbar></app-navbar>
+</div>
+<div *ngIf="false">
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark py-4 px-4">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <a class="navbar-brand mt-2 mt-lg-0" href="/">
+          <img src="./assets/images/messageIcon.png" height="40"/>
+        </a>
+
+      </div>
+    </div>
+  </nav>
+</div>
+
 <router-outlet></router-outlet>

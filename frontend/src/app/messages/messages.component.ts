@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {User} from "../utils/user";
 
 @Component({
   selector: 'app-messages',
@@ -7,7 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MessagesComponent implements OnInit {
 
-  constructor() { }
+  users: User[] = [];
+
+  constructor() {
+    this.users = [
+      new User('friend@ua.pt', 'friend', 'friend', 'trending-design.png', false)
+    ]
+  }
 
   ngOnInit(): void {
   }

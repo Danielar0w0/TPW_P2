@@ -10,12 +10,13 @@ export class FriendsComponent implements OnInit {
 
   users: User[] = [];
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor() {
     this.users = [
       new User('friend@ua.pt', 'friend', 'friend', 'trending-design.png', false)
     ]
+  }
+
+  ngOnInit(): void {
   }
 
 }
