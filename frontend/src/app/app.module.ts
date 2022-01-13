@@ -12,6 +12,12 @@ import { LoginComponent } from './login/login.component';
 import { FriendsComponent } from './friends/friends.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MessagesComponent } from './messages/messages.component';
+import {ModalModule} from "ngx-bootstrap/modal";
+import { DeleteModalComponent } from './delete-modal/delete-modal.component';
+import { CommentModalComponent } from './comment-modal/comment-modal.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { SearchResultsComponent } from './search-results/search-results.component';
+import { MessagesWithComponent } from './messages-with/messages-with.component';
 
 @NgModule({
   declarations: [
@@ -24,11 +30,17 @@ import { MessagesComponent } from './messages/messages.component';
     LoginComponent,
     FriendsComponent,
     ProfileComponent,
-    MessagesComponent
+    MessagesComponent,
+    DeleteModalComponent,
+    CommentModalComponent,
+    EditProfileComponent,
+    SearchResultsComponent,
+    MessagesWithComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ModalModule
   ],
   providers: [],
   bootstrap: [AppComponent]

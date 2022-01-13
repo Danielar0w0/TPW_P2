@@ -1,0 +1,32 @@
+<div bsModal #commentModal="bs-modal" class="modal fade" id="commentsModal{{ post.post_id }}" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Comment</h5>
+        <button type="button" class="btn-close me-1" data-dismiss="modal"
+                aria-label="Close" (click)="hide()"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <form action="/comment/" method="post"
+              class="form-horizontal justify-content-center">
+
+          <div class="row m-3">
+            <p class="fw-bolder p-0 mb-2">Add your comment</p>
+            <input text="text" id="comment">
+          </div>
+
+          <input type="hidden" name="post_id" value="{{ post.post_id }}">
+          <input type="hidden" name="redirect_uri" value="/profile">
+          <input type="hidden" name="user_email" value="{{ user_profile.email }}">
+
+          <div class="modal-footer">
+            <input type="submit" value="Save" class="btn btn-primary"/>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

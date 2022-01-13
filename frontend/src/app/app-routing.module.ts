@@ -18,6 +18,7 @@ const routes: any = [
   {path: 'post_details/:id', component: PostDetailsComponent},
   {path: 'friends', component: FriendsComponent},
   {path: 'profile', component: ProfileComponent},
+  {path: 'profile/:email', component: ProfileComponent},
   {path: 'messages', component: MessagesComponent},
   { path: '**', component: LoginComponent }
 ];
