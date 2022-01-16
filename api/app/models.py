@@ -6,7 +6,7 @@ class User(models.Model):
     user_email = models.CharField(max_length=80, primary_key=True)
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=80)
-    image = models.FileField()
+    image = models.FileField(default=None)
 
     def update_image(self, file):
         self.image.storage.delete(self.image.name)
