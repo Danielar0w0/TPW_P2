@@ -20,5 +20,13 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('test/users', views.users),
-    path('api/login', views.login)
+    path('api/login', views.login),
+    path('api/register', views.register),
+    path('api/users', views.users),
+    path('api/user', views.user),
+    path('api/posts', views.posts),
+    path('api/posts/<int:postId>/comments', views.post_comments),
+    path('api/friendship', views.friendship),
+    path('api/messages', views.messages),
+    path('api/user/messages', views.get_messages_from_user)
 ]

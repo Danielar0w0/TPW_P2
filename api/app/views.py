@@ -11,9 +11,7 @@ from app.serializers import UserSerializer, FriendshipSerializer, PostSerializer
 
 @api_view(['GET', 'POST'])
 def users(request):
-
     if request.method == 'GET':
-
         # if 'user_email':
         #    email = (...)
         #    try:
@@ -37,6 +35,7 @@ def users(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def login(request):
     username = request.data['username']
@@ -51,3 +50,43 @@ def login(request):
         return Response(status=status.HTTP_200_OK)
 
     return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+def register(request):
+    pass
+
+
+@api_view(['GET'])
+def users(request):
+    pass
+
+
+@api_view(['GET'])
+def user(request):
+    pass
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+def posts(request):
+    pass
+
+
+@api_view(['GET', 'POST'])
+def post_comments(request):
+    pass
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+def friendship(request):
+    pass
+
+
+@api_view(['GET', 'POST'])
+def messages(request):
+    pass
+
+
+@api_view(['GET'])
+def get_messages_from_user(request):
+    pass
