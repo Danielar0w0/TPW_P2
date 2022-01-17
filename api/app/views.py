@@ -36,3 +36,18 @@ def users(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def login(request):
+    username = request.data['username']
+    password = request.data['password']
+
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if user.password == password:
+        return Response(status=status.HTTP_200_OK)
+
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
