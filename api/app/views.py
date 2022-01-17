@@ -45,7 +45,7 @@ def login(request):
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     if user.password == password:
         return Response(status=status.HTTP_200_OK)
