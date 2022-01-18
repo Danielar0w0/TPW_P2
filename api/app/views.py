@@ -54,17 +54,34 @@ def login(request):
 
 @api_view(['POST'])
 def register(request):
-    pass
+    username = request.data['username']
+    password = request.data['password']
+    email = request.data['email']
+    # TODO: image
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 def users(request):
-    pass
+    name = request.data['name']
+    try:
+        user = User.objects.get(name=name)
+    except User.DoesNotExist:
+        return
+    users = User.objects.all().exclude(username=name)
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
 def user(request):
-    pass
+    email = request.data["email"]
+    try:
+        user = User.objects.get(user_email=email)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = UserSerializer(user)
+    return Response(serializer.data)
 
 
 @api_view(['GET', 'POST', 'DELETE'])
