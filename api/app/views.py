@@ -70,7 +70,7 @@ def users(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     users = User.objects.all().exclude(username=name)
-    serializer = UserSerializer(users, many=True)
+    serializer = UserSerializer(data=users, many=True)
     return Response(serializer.data)
 
 
@@ -83,7 +83,7 @@ def user(request):
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = UserSerializer(user)
+    serializer = UserSerializer(data=user)
     return Response(serializer.data)
 
 
@@ -106,9 +106,10 @@ def posts(request):
             # return Response("There aren't posts", status=status.HTTP_404_NOT_FOUND)
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = PostSerializer(posts, many=True)
+        serializer = PostSerializer(data=posts, many=True)
         return Response(serializer.data)
         # return Response(status=status.HTTP_200_OK)
+
     if request.method == 'POST':
         pass
 
@@ -140,7 +141,7 @@ def post_comments(request, postId):
         except Comment.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CommentSerializer(comments, many=True)
+        serializer = CommentSerializer(data=comments, many=True)
         return Response(serializer.data)
 
     if request.method == 'POST':
@@ -231,10 +232,54 @@ def friendship(request):
 @api_view(['GET', 'POST'])
 def messages(request):
     if request.method == 'GET':
-        pass
+        current_user = request.data["current_user"]
+        # check if current user exists
+        try:
+            User.objects.get(user_email=current_user)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        receptor = request.data["receptor"]
+        # check if receptor exists
+        try:
+            User.objects.get(user_email=receptor)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            messages = Message.objects.filter(sender=current_user, receiver=receptor)
+        except Message.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = MessageSerializer(data=messages, many=True)
+        return Response(serializer.data)
+
     if request.method == 'POST':
-        pass
-    pass
+        sender = request.data["sender"]
+        # check if sender exists
+        try:
+            User.objects.get(user_email=sender)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        receiver = request.data["receiver"]
+        # check if receiver exists
+        try:
+            User.objects.get(user_email=receiver)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        content = request.data["message"]
+        # É preciso verificar se podem enviar mensagens um ao outro?
+        message = Message(sender=sender, receiver=receiver, content=content)
+
+        serializer = MessageSerializer(data=message)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        # 400 é o código mais correto?
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
