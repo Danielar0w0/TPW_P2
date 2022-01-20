@@ -15,18 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('test/users', views.users),
-    path('api/login', views.login),
-    path('api/register', views.register),
-    path('api/users', views.users),
-    path('api/user', views.user),
-    path('api/posts', views.posts),
-    path('api/posts/<int:postId>/comments', views.post_comments),
-    path('api/friendship', views.friendship),
-    path('api/messages', views.messages),
-    path('api/user/messages', views.get_messages_from_user)
+    # path('test/users', views.users),
+    path('api/login', views.AppAuthToken.as_view(), name='api_login'),
+    path('api/register', views.RegisterView.as_view(), name='api_register'),
+    path('api/users', views.UsersView.as_view(), name='api_users'),
+    path('api/user/<str:user_email>', views.UserView.as_view(), name='api_user'),
+    path('api/posts', views.posts, name='api_posts'),
+    path('api/posts/<int:postId>/comments', views.post_comments, name='api_posts_with_args'),
+    path('api/friendship', views.friendship, name='api_friendship'),
+    path('api/messages', views.messages, name='api_messages'),
+    path('api/user/messages', views.get_messages_from_user, name='api_user_messages'),
 ]
