@@ -8,10 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.authentication import AppAuthorizer
+from app.utils.authentication import AppAuthorizer
 from app.models import AppUser, Friendship, Post, Comment, Message
 from app.serializers import UserSerializer, FriendshipSerializer, PostSerializer, CommentSerializer, MessageSerializer, \
     AuthSerializer
+
+from django.db.models import Q
+from app.utils.query_type import QueryType
 
 
 # A.k.a Login
@@ -93,7 +96,6 @@ class UsersView(generics.ListCreateAPIView):
 
 
 class PostsView(APIView):
-
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
@@ -150,7 +152,8 @@ class PostsView(APIView):
     def delete(request):
 
         if not request.user.is_staff:
-            return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse({"message": "You do not have permission to perform this action."},
+                                status=status.HTTP_403_FORBIDDEN)
 
         if 'id' not in request.data:
             return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
@@ -160,7 +163,8 @@ class PostsView(APIView):
         try:
             post_entity = Post.objects.get(post_id=post_id)
         except Post.DoesNotExist:
-            return JsonResponse({"message": "Unable to find the post {}.".format(post_id)}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "Unable to find the post {}.".format(post_id)},
+                                status=status.HTTP_404_NOT_FOUND)
 
         post_owner_entity = post_entity.user
 
@@ -362,7 +366,6 @@ class FriendshipsView(APIView):
 
 
 class MessagesView(APIView):
-
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
@@ -383,10 +386,12 @@ class MessagesView(APIView):
         receptor_user_exists = AppUser.objects.filter(user_email=receptor_user_email).exists()
 
         if not current_user_exists or not receptor_user_exists:
-            return JsonResponse({"message": "Unable to find one (or both) of the provided user(s)."}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "Unable to find one (or both) of the provided user(s)."},
+                                status=status.HTTP_404_NOT_FOUND)
 
         try:
-            all_messages_entities = Message.objects.filter(sender__user_email=current_user_email, receiver__user_email=receptor_user_email)
+            all_messages_entities = Message.objects.filter(sender__user_email=current_user_email,
+                                                           receiver__user_email=receptor_user_email)
         except Message.DoesNotExist:
             return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
@@ -403,8 +408,10 @@ class MessagesView(APIView):
         receiver_email = request.data["receiver"]
         message_content = request.data["message"]
 
-        if request.user.email != sender_email and not request.user.is_staff:
-            return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(sender_email):
+            return app_auth.unauthorized_response()
 
         # Forbid user to message himself
         if sender_email == receiver_email:
@@ -414,7 +421,8 @@ class MessagesView(APIView):
             sender_entity = AppUser.objects.get(user_email=sender_email)
             receiver_entity = AppUser.objects.get(user_email=receiver_email)
         except AppUser.DoesNotExist:
-            return JsonResponse({"message": "Unable to find one (or both) of the provided user(s)."}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "Unable to find one (or both) of the provided user(s)."},
+                                status=status.HTTP_404_NOT_FOUND)
 
         message_entity = Message(sender=sender_entity, receiver=receiver_entity, content=message_content)
         message_entity.save()
@@ -424,19 +432,21 @@ class MessagesView(APIView):
 
 
 class MessagesQueryView(APIView):
-
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
     def get(request, user_email):
 
-        if request.user.email != user_email and not request.user.is_staff:
-            return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(user_email):
+            return app_auth.unauthorized_response()
 
         current_user_exists = AppUser.objects.filter(user_email=user_email).exists()
 
         if not current_user_exists:
-            return JsonResponse({"message": "Unable to find the user {}.".format(user_email)}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "Unable to find the user {}.".format(user_email)},
+                                status=status.HTTP_404_NOT_FOUND)
 
         all_messages_entities = Message.objects.filter(sender__user_email=user_email)
 
@@ -444,20 +454,62 @@ class MessagesQueryView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# TODO:
-#  Re-use the code bellow in a new search endpoint. That endpoint, 'api/search', should receive
-#  the type of the search - USER_NAME, USER_EMAIL, POST_DESCRIPTION etc... and the query.
-#  This query will be the name of the user, or the email, and so on.
+class SearchQueryView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-# @staticmethod
-# def get(request):
-#
-#     name = request.data['name']
-#     try:
-#         user = AppUser.objects.get(name=name)
-#     except AppUser.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#     users = AppUser.objects.all().exclude(username=name)
-#     serializer = UserSerializer(users, many=True)
-#     return Response(serializer.data)
+    @staticmethod
+    def get(request):
+
+        if 'query_type' not in request.data or 'query' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        query_type = request.data['query_type']
+        query = request.data['query']
+
+        if query_type == QueryType.USER_NAME.name:
+
+            try:
+                users = AppUser.objects.filter(username__contains=query)
+            except AppUser.DoesNotExist:
+                return JsonResponse({"message": "Unable to find the user {}.".format(query)},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif query_type == QueryType.USER_EMAIL.name:
+
+            try:
+                users = AppUser.objects.filter(user_email=query)
+            except AppUser.DoesNotExist:
+                return JsonResponse({"message": "Unable to find the user {}.".format(query)},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif query_type == QueryType.POST_DESCRIPTION.name:
+
+            try:
+                posts = Post.objects.filter(description__contains=query)
+            except Post.DoesNotExist:
+                return JsonResponse({"message": "Unable to find the user {}.".format(query)},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+            serializer = PostSerializer(posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif query_type == QueryType.MESSAGE_SENDER_RECEIVER.name:
+
+            try:
+                messages = Message.objects.filter(
+                    Q(sender__username__contains=query) | Q(receiver__username__contains=query))
+            except Message.DoesNotExist:
+                return JsonResponse({"message": "Unable to find the user {}.".format(query)},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+            serializer = MessageSerializer(messages, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+            return JsonResponse({"message": "Unknown query type."}, status=status.HTTP_400_BAD_REQUEST)

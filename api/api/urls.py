@@ -30,4 +30,5 @@ urlpatterns = [
     path('api/friendship', views.FriendshipsView.as_view(), name='api_friendship'),
     path('api/messages', views.MessagesView.as_view(), name='api_messages'),
     path('api/messages/<str:user_email>', views.MessagesQueryView.as_view(), name='api_user_messages'),
+    path('api/search', views.SearchQueryView.as_view(), name='api_search'),
 ]
