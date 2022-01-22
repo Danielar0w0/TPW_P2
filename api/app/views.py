@@ -1,14 +1,12 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 from django.http import JsonResponse
-
 from rest_framework import status, generics
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import User
 
 from app.models import AppUser, Friendship, Post, Comment, Message
 from app.serializers import UserSerializer, FriendshipSerializer, PostSerializer, CommentSerializer, MessageSerializer, \
@@ -51,18 +49,19 @@ class RegisterView(APIView):
 
     @staticmethod
     def post(request):
-
         serializer = UserSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-
             password = serializer.validated_data['password']
             hashed_password = make_password(password, hasher='bcrypt_sha256')
 
-            django_user = User(username=serializer.validated_data['username'], email=serializer.validated_data['user_email'], password=hashed_password)
+            django_user = User(username=serializer.validated_data['username'],
+                               email=serializer.validated_data['user_email'], password=hashed_password)
             django_user.save()
 
-            app_user = AppUser(username=serializer.validated_data['username'], user_email=serializer.validated_data['user_email'], password=hashed_password, image=serializer.validated_data['image'])
+            app_user = AppUser(username=serializer.validated_data['username'],
+                               user_email=serializer.validated_data['user_email'], password=hashed_password,
+                               image=request.data['image'])
             app_user.save()
 
             return JsonResponse({"message": "User registered."}, status=status.HTTP_201_CREATED)
@@ -71,7 +70,7 @@ class RegisterView(APIView):
 
 
 class UserView(APIView):
-
+    # To protect the endpoint with TokenAuthentication
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
@@ -80,225 +79,319 @@ class UserView(APIView):
         try:
             current_user = AppUser.objects.get(user_email=user_email)
         except AppUser.DoesNotExist:
-            return JsonResponse({"message": "The user {} does not exists".format(user_email)}, status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "The user {} does not exists".format(user_email)},
+                                status=status.HTTP_404_NOT_FOUND)
 
         return Response(UserSerializer(current_user).data, status=status.HTTP_200_OK)
 
-    # @staticmethod
-    # def post(request):
-    #
-    #     serializer = UserSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UsersView(generics.ListCreateAPIView):
-
     permission_classes = (IsAuthenticated,)
     queryset = AppUser.objects.all()
     serializer_class = UserSerializer
 
 
-@api_view(['GET', 'POST', 'DELETE'])
-def posts(request):
-    if request.method == 'GET':
+class PostsView(APIView):
 
-        # print(request.data["user"])
-        user_email = request.data["user"]
-        # check if user exists
-        try:
-            user = AppUser.objects.get(user_email=user_email)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    permission_classes = (IsAuthenticated,)
 
-        # check if posts from user exist
+    @staticmethod
+    def get(request):
+
+        if 'user' in request.data:
+
+            user_email = request.data["user"]
+            user_exists = AppUser.objects.filter(user_email=user_email).exists()
+
+            if not user_exists:
+                return JsonResponse({"message": "Unable to find the user {}.".format(user_email)},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                user_posts = Post.objects.filter(user__user_email=user_email)
+            except Post.DoesNotExist:
+                return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = PostSerializer(user_posts, many=True)
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+
+        else:
+
+            if not request.user.is_staff:
+                return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+
+            all_posts = Post.objects.all()
+            serializer = PostSerializer(all_posts, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request):
+
+        serializer = PostSerializer(data=request.data)
+
+        # If the serializer data is not valid an exception is raised.
+        # We don't need to perform any extra check here
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+        return Response(serializer.data, status.HTTP_201_CREATED)
+
+    @staticmethod
+    def delete(request):
+
+        if not request.user.is_staff:
+            return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+
+        if 'id' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        post_id = request.data["id"]
+
         try:
-            posts = Post.objects.filter(user=user_email)
+            post_entity = Post.objects.get(post_id=post_id)
         except Post.DoesNotExist:
-            # return Response("There aren't posts", status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "Unable to find the post {}.".format(post_id)}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = PostSerializer(data=posts, many=True)
-        return Response(serializer.data)
-        # return Response(status=status.HTTP_200_OK)
-
-    if request.method == 'POST':
-        pass
-
-    if request.method == 'DELETE':
-        id = request.data["id"]
-        # check if post exists
-        try:
-            post = Post.objects.get(post_id=id)
-        except Post.DoesNotExist:
-            # return Response("There aren't posts", status=status.HTTP_404_NOT_FOUND)
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        post.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        post_entity.delete()
+        return JsonResponse({"message": "Post successfully deleted."}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST'])
-def post_comments(request, postId):
-    if request.method == 'GET':
-        # check if post exists
-        try:
-            post = Post.objects.get(post_id=postId)
-        except Post.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+class PostCommentsView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def get(request, post_id):
+
+        post_exists = Post.objects.filter(post_id=post_id).exists()
+
+        if not post_exists:
+            return JsonResponse({"message": "Unable to find the post {}.".format(post_id)},
+                                status=status.HTTP_404_NOT_FOUND)
 
         # check if comments from post exist
         try:
-            comments = Comment.objects.filter(post=postId)
+            comments = Comment.objects.filter(post=post_id)
         except Comment.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CommentSerializer(data=comments, many=True)
-        return Response(serializer.data)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    if request.method == 'POST':
-        # check if post exists
+    @staticmethod
+    def post(request, post_id):
+
+        if 'user' not in request.data or 'content' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        post_content = request.data['content']
+        post_user_email = request.data['user']
+
+        post_exists = Post.objects.filter(post_id=post_id).exists()
+        user_exists = AppUser.objects.filter(user_email=post_user_email).exists()
+
+        if not post_exists:
+            return JsonResponse({"message": "Unable to find the post {}.".format(post_id)},
+                                status=status.HTTP_404_NOT_FOUND)
+        elif not user_exists:
+            return JsonResponse({"message": "Unable to find the user {}.".format(post_user_email)},
+                                status=status.HTTP_404_NOT_FOUND)
+
+        post_user = AppUser.objects.get(user_email=post_user_email)
+        post_entity = Post.objects.get(post_id=post_id)
+
+        post_comment = Comment(user=post_user, post=post_entity, content=post_content)
+        post_comment.save()
+
+        serializer = CommentSerializer(post_comment)
+
+        return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def delete(request, post_id):
+
+        if 'id' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        comment_id = request.data['id']
+
+        post_exists = Post.objects.filter(post_id=post_id).exists()
+        comment_exists = Comment.objects.filter(post_id=post_id, comment_id=comment_id).exists()
+
+        if not post_exists:
+            return JsonResponse({"message": "Unable to find the post {}.".format(post_id)},
+                                status=status.HTTP_404_NOT_FOUND)
+        elif not comment_exists:
+            return JsonResponse({"message": "Unable to find the comment {}.".format(comment_id)},
+                                status=status.HTTP_404_NOT_FOUND)
+
+        current_comment = Comment.objects.get(post_id=post_id, comment_id=comment_id)
+        current_comment.delete()
+
+        return JsonResponse(
+            {"message": "Comment {} from post {} was successfully deleted.".format(comment_id, post_id)},
+            status=status.HTTP_200_OK)
+
+
+class FriendshipsView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def get(request):
+
+        if 'current_user' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_user_email = request.data['current_user']
+        user_exists = AppUser.objects.filter(user_email=current_user_email).exists()
+
+        if not user_exists:
+            return JsonResponse({"message": "Unable to find user {}.".format(current_user_email)},
+                                status=status.HTTP_404_NOT_FOUND)
+
         try:
-            post = Post.objects.get(post_id=postId)
-        except Post.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            all_friendships = Friendship.objects.get(first_user__user_email=current_user_email)
+        except Friendship.DoesNotExist:
+            return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
-        user_email = request.data["user"]
-        # check if user exists
+        serializer = FriendshipSerializer(all_friendships, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def post(request):
+
+        if 'current_user' not in request.data or 'other_user' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_user_email = request.data["current_user"]
+        other_user_email = request.data["other_user"]
+
+        if current_user_email == other_user_email:
+            return JsonResponse({"message": "Unable to create friendship with self."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        current_user_exists = AppUser.objects.filter(user_email=current_user_email).exists()
+        other_user_exists = AppUser.objects.filter(user_email=other_user_email).exists()
+
+        if not current_user_exists or not other_user_exists:
+            return JsonResponse({"message": "Either the current user or the second user don't exist."},
+                                status=status.HTTP_404_NOT_FOUND)
+
+        current_user_entity = AppUser.objects.get(user_email=current_user_email)
+        other_user_entity = AppUser.objects.get(user_email=other_user_email)
+
+        friendship_entity = Friendship(first_user=current_user_entity, second_user=other_user_entity)
+        friendship_entity.save()
+
+        serializer = FriendshipSerializer(friendship_entity)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def delete(request):
+
+        if 'current_user' not in request.data or 'other_user' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_user_email = request.data["current_user"]
+        other_user_email = request.data["other_user"]
+
+        if current_user_email == other_user_email:
+            return JsonResponse({"message": "Unable to delete friendship with self."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        current_user_exists = AppUser.objects.filter(user_email=current_user_email).exists()
+        other_user_exists = AppUser.objects.filter(user_email=other_user_email).exists()
+
+        if not current_user_exists or not other_user_exists:
+            return JsonResponse({"message": "Either the current user or the second user don't exist."},
+                                status=status.HTTP_404_NOT_FOUND)
+
         try:
-            user = AppUser.objects.get(user_email=user_email)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        content = request.data["content"]
-        comment = Comment(user=user_email, post=postId, content=content)
-
-        serializer = CommentSerializer(data=comment)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        # 400 é o código mais correto?
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'POST', 'DELETE'])
-def friendship(request):
-    if request.method == 'GET':
-        # "name": "Ola" <= termo de pesquisa (opcional?)
-        # "current_user": "test@ua.pt"
-        pass
-
-    if request.method == 'POST':
-        current_user = request.data["current_user"]
-        # check if current user exists
-        try:
-            AppUser.objects.get(user_email=current_user)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        other_user = request.data["other_user"]
-        # check if other user exists
-        try:
-            AppUser.objects.get(user_email=other_user)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        friendship = Friendship(first_user=current_user, second_user=other_user)
-
-        serializer = FriendshipSerializer(data=friendship)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        # 400 é o código mais correto?
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    if request.method == 'DELETE':
-        current_user = request.data["current_user"]
-        # check if current user exists
-        try:
-            AppUser.objects.get(user_email=current_user)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        other_user = request.data["other_user"]
-        # check if other user exists
-        try:
-            AppUser.objects.get(user_email=other_user)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        # check if friendship exists
-        try:
-            friendship = Friendship.objects.filter(first_user=current_user, second_user=other_user)
+            friendship_entities = Friendship.objects.filter(first_user__user_email=current_user_email,
+                                                            second_user__user_email=other_user_email)
         except Friendship.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        for friend in friendship:
-            friend.delete()
+        if len(friendship_entities) <= 0:
+            return JsonResponse({"message": "Unable to find the friendship between the users."},
+                                status=status.HTTP_404_NOT_FOUND)
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        for friendship_entity in friendship_entities:
+            friendship_entity.delete()
+
+        return JsonResponse({"message": "Friendship deleted."}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST'])
-def messages(request):
-    if request.method == 'GET':
-        current_user = request.data["current_user"]
-        # check if current user exists
+class MessagesView(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def get(request):
+
+        if 'current_user' not in request.data or 'receptor' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        current_user_email = request.data["current_user"]
+        receptor_user_email = request.data["receptor"]
+
+        current_user_exists = AppUser.objects.filter(user_email=current_user_email).exists()
+        receptor_user_exists = AppUser.objects.filter(user_email=receptor_user_email).exists()
+
+        if not current_user_exists or not receptor_user_exists:
+            return JsonResponse({"message": "Unable to find one (or both) of the provided user(s)."}, status=status.HTTP_404_NOT_FOUND)
+
         try:
-            AppUser.objects.get(user_email=current_user)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        receptor = request.data["receptor"]
-        # check if receptor exists
-        try:
-            AppUser.objects.get(user_email=receptor)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            messages = Message.objects.filter(sender=current_user, receiver=receptor)
+            all_messages_entities = Message.objects.filter(sender__user_email=current_user_email, receiver__user_email=receptor_user_email)
         except Message.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = MessageSerializer(data=messages, many=True)
+        serializer = MessageSerializer(all_messages_entities, many=True)
         return Response(serializer.data)
 
-    if request.method == 'POST':
-        sender = request.data["sender"]
-        # check if sender exists
+    @staticmethod
+    def post(request):
+
+        if 'sender' not in request.data or 'receiver' not in request.data or 'message' not in request.data:
+            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+
+        sender_email = request.data["sender"]
+        receiver_email = request.data["receiver"]
+        message_content = request.data["message"]
+
+        # Forbid user to message himself
+        if sender_email == receiver_email:
+            return JsonResponse({"message": "Unable to message self account."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            AppUser.objects.get(user_email=sender)
+            sender_entity = AppUser.objects.get(user_email=sender_email)
+            receiver_entity = AppUser.objects.get(user_email=receiver_email)
         except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return JsonResponse({"message": "Unable to find one (or both) of the provided user(s)."}, status=status.HTTP_404_NOT_FOUND)
 
-        receiver = request.data["receiver"]
-        # check if receiver exists
-        try:
-            AppUser.objects.get(user_email=receiver)
-        except AppUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        message_entity = Message(sender=sender_entity, receiver=receiver_entity, content=message_content)
+        message_entity.save()
 
-        content = request.data["message"]
-        # É preciso verificar se podem enviar mensagens um ao outro?
-        message = Message(sender=sender, receiver=receiver, content=content)
-
-        serializer = MessageSerializer(data=message)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        # 400 é o código mais correto?
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = MessageSerializer(message_entity)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(['GET'])
-def get_messages_from_user(request):
-    pass
+class MessagesQueryView(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def get(request, user_email):
+
+        current_user_exists = AppUser.objects.filter(user_email=user_email).exists()
+
+        if not current_user_exists:
+            return JsonResponse({"message": "Unable to find the user {}.".format(user_email)}, status=status.HTTP_404_NOT_FOUND)
+
+        all_messages_entities = Message.objects.filter(sender__user_email=user_email)
+
+        serializer = MessageSerializer(all_messages_entities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # TODO:
@@ -307,14 +400,14 @@ def get_messages_from_user(request):
 #  This query will be the name of the user, or the email, and so on.
 
 # @staticmethod
-    # def get(request):
-    #
-    #     name = request.data['name']
-    #     try:
-    #         user = AppUser.objects.get(name=name)
-    #     except AppUser.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #
-    #     users = AppUser.objects.all().exclude(username=name)
-    #     serializer = UserSerializer(data=users, many=True)
-    #     return Response(serializer.data)
+# def get(request):
+#
+#     name = request.data['name']
+#     try:
+#         user = AppUser.objects.get(name=name)
+#     except AppUser.DoesNotExist:
+#         return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     users = AppUser.objects.all().exclude(username=name)
+#     serializer = UserSerializer(users, many=True)
+#     return Response(serializer.data)

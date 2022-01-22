@@ -4,10 +4,16 @@ import re
 from django.db import models
 
 
-def process_file(instance, filename):
+def process_user_profile_picture(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (re.sub("[^A-Za-z0-9_]", "", filename), ext)
     return os.path.join('./static/', filename)
+
+
+def process_post_file(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (re.sub("[^A-Za-z0-9_]", "", filename), ext)
+    return os.path.join('./static/posts', filename)
 
 
 class AppUser(models.Model):
@@ -15,7 +21,7 @@ class AppUser(models.Model):
     user_email = models.CharField(max_length=80, primary_key=True)
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=80)
-    image = models.FileField(default=None, upload_to=process_file)
+    image = models.FileField(default=None, upload_to=process_user_profile_picture)
 
     def update_image(self, file):
         self.image.storage.delete(self.image.name)
@@ -36,7 +42,7 @@ class Post(models.Model):
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE, null=True)
     description = models.CharField(max_length=256)
     date = models.DateField(auto_now_add=True)
-    file = models.FileField()
+    file = models.FileField(default=None, upload_to=process_post_file)
 
     def delete(self):
         self.file.storage.delete(self.file.name)
