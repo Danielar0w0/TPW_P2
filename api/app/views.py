@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from app.authentication import AppAuthorizer
 from app.models import AppUser, Friendship, Post, Comment, Message
 from app.serializers import UserSerializer, FriendshipSerializer, PostSerializer, CommentSerializer, MessageSerializer, \
     AuthSerializer
@@ -117,8 +118,10 @@ class PostsView(APIView):
 
         else:
 
-            if not request.user.is_staff:
-                return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+            app_auth = AppAuthorizer(request)
+
+            if not app_auth.is_admin():
+                return app_auth.unauthorized_response()
 
             all_posts = Post.objects.all()
             serializer = PostSerializer(all_posts, many=True)
@@ -132,6 +135,13 @@ class PostsView(APIView):
         # If the serializer data is not valid an exception is raised.
         # We don't need to perform any extra check here
         serializer.is_valid(raise_exception=True)
+
+        post_owner = serializer.validated_data['user']
+
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(post_owner.user_email):
+            return app_auth.unauthorized_response()
 
         serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
@@ -151,6 +161,13 @@ class PostsView(APIView):
             post_entity = Post.objects.get(post_id=post_id)
         except Post.DoesNotExist:
             return JsonResponse({"message": "Unable to find the post {}.".format(post_id)}, status=status.HTTP_404_NOT_FOUND)
+
+        post_owner_entity = post_entity.user
+
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(post_owner_entity.user_email):
+            return app_auth.unauthorized_response()
 
         post_entity.delete()
         return JsonResponse({"message": "Post successfully deleted."}, status=status.HTTP_200_OK)
@@ -185,6 +202,11 @@ class PostCommentsView(APIView):
 
         post_content = request.data['content']
         post_user_email = request.data['user']
+
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(post_user_email):
+            return app_auth.unauthorized_response()
 
         post_exists = Post.objects.filter(post_id=post_id).exists()
         user_exists = AppUser.objects.filter(user_email=post_user_email).exists()
@@ -225,6 +247,13 @@ class PostCommentsView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
 
         current_comment = Comment.objects.get(post_id=post_id, comment_id=comment_id)
+        current_comment_owner = current_comment.user
+
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(current_comment_owner.user_email):
+            return app_auth.unauthorized_response()
+
         current_comment.delete()
 
         return JsonResponse(
@@ -265,6 +294,11 @@ class FriendshipsView(APIView):
         current_user_email = request.data["current_user"]
         other_user_email = request.data["other_user"]
 
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(current_user_email):
+            return app_auth.unauthorized_response()
+
         if current_user_email == other_user_email:
             return JsonResponse({"message": "Unable to create friendship with self."},
                                 status=status.HTTP_400_BAD_REQUEST)
@@ -294,6 +328,11 @@ class FriendshipsView(APIView):
 
         current_user_email = request.data["current_user"]
         other_user_email = request.data["other_user"]
+
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(current_user_email):
+            return app_auth.unauthorized_response()
 
         if current_user_email == other_user_email:
             return JsonResponse({"message": "Unable to delete friendship with self."},
@@ -335,6 +374,11 @@ class MessagesView(APIView):
         current_user_email = request.data["current_user"]
         receptor_user_email = request.data["receptor"]
 
+        app_auth = AppAuthorizer(request)
+
+        if not app_auth.is_authorized(current_user_email):
+            return app_auth.unauthorized_response()
+
         current_user_exists = AppUser.objects.filter(user_email=current_user_email).exists()
         receptor_user_exists = AppUser.objects.filter(user_email=receptor_user_email).exists()
 
@@ -359,6 +403,9 @@ class MessagesView(APIView):
         receiver_email = request.data["receiver"]
         message_content = request.data["message"]
 
+        if request.user.email != sender_email and not request.user.is_staff:
+            return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+
         # Forbid user to message himself
         if sender_email == receiver_email:
             return JsonResponse({"message": "Unable to message self account."}, status=status.HTTP_400_BAD_REQUEST)
@@ -382,6 +429,9 @@ class MessagesQueryView(APIView):
 
     @staticmethod
     def get(request, user_email):
+
+        if request.user.email != user_email and not request.user.is_staff:
+            return JsonResponse({"message": "You do not have permission to perform this action."}, status=status.HTTP_403_FORBIDDEN)
 
         current_user_exists = AppUser.objects.filter(user_email=user_email).exists()
 
