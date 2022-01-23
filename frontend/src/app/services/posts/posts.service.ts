@@ -19,7 +19,15 @@ export class PostsService {
   constructor(private httpClient: HttpClient) { }
 
   getPostsByUser(email: string): Observable<Post[]> {
-    const uri = this.baseUrl + `/api/posts/${email}`;
+    const uri = this.baseUrl + `/api/posts`;
+
+    const options = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body: {
+        'user': email,
+      }
+    };
+
     return this.httpClient.get<Post[]>(uri, httpOptions);
   }
 
