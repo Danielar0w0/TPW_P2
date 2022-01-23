@@ -19,6 +19,7 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import { MessagesWithComponent } from './messages-with/messages-with.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { CreatePostComponent } from './create-post/create-post.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ModalModule
+    ModalModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
