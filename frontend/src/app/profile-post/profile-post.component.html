@@ -12,13 +12,13 @@
                 <div class="btn-group">
                     <form action="/post_details/{{ post.post_id }}">
 
-                        <button id="view-button" type="submit" class="btn btn-sm btn-primary">View
+                        <button id="view-button" type="submit" class="btn btn-sm btn-primary" routerLink="/post_details/{{ post.post_id }}">View
                         </button>
                     </form>
 
                     <!-- TODO: If user is authenticated -->
                     <button type="button" class="btn btn-sm btn-outline-primary"
-                            data-toggle="modal">Comment
+                            data-toggle="modal" (click)="commentPost()">Comment
                     </button>
 
                     <div *ngIf="session !== null && userProfile.user_email === session.email">

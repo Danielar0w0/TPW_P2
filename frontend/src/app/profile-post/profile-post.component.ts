@@ -5,6 +5,7 @@ import {User} from "../utils/user";
 import {PostsService} from "../services/posts/posts.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {InfoModalComponent} from "../info-modal/info-modal.component";
+import {CommentModalComponent} from "../comment-modal/comment-modal.component";
 
 @Component({
     selector: 'ProfilePost',
@@ -41,6 +42,12 @@ export class ProfilePostComponent implements OnInit {
                 }
             })
 
+    }
+
+    commentPost() {
+        const modalRef = this.modalService.open(CommentModalComponent);
+        modalRef.componentInstance.post = this.post;
+        modalRef.componentInstance.user_profile = Session.getCurrentSession();
     }
 
 }
