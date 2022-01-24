@@ -281,7 +281,7 @@ class FriendshipsView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
 
         try:
-            all_friendships = Friendship.objects.get(first_user__user_email=user_email)
+            all_friendships = Friendship.objects.filter(first_user__user_email=user_email)
         except Friendship.DoesNotExist:
             return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
