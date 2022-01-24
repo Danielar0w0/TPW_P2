@@ -100,7 +100,7 @@ class PostsView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
-    def get(request):
+    def get(request, user_email=None):
 
         if request.GET:
 
@@ -112,6 +112,22 @@ class PostsView(APIView):
                                     status=status.HTTP_404_NOT_FOUND)
 
             serializer = PostSerializer(Post.objects.get(post_id=post_id))
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        elif user_email is not None:
+
+            user_exists = AppUser.objects.filter(user_email=user_email).exists()
+
+            if not user_exists:
+                return JsonResponse({"message": "Unable to find the user {}.".format(user_email)},
+                                    status=status.HTTP_404_NOT_FOUND)
+
+            try:
+                user_posts = Post.objects.filter(user__user_email=user_email)
+            except Post.DoesNotExist:
+                return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = PostSerializer(user_posts, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         else:
