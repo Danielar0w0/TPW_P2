@@ -21,6 +21,7 @@ import { MessagesWithComponent } from './messages-with/messages-with.component';
 import { CreatePostComponent } from './create-post/create-post.component';
 import {HttpClientModule} from "@angular/common/http";
 import {ReactiveFormsModule} from "@angular/forms";
+import { FeedPostComponent } from './feed-post/feed-post.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {ReactiveFormsModule} from "@angular/forms";
     SearchResultsComponent,
     MessagesWithComponent,
     CreatePostComponent,
+    FeedPostComponent,
   ],
   imports: [
     BrowserModule,

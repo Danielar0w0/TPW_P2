@@ -1,52 +1,51 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {Post} from "../../utils/post";
 import {ResponseMessage} from "../../utils/response_message";
 
+// TODO: Change by user token.
+let token = 'f359f28a56de55d192bc1a46b5d4733cf1d24531';
+
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    })
 }
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PostsService {
 
-  private baseUrl = environment.apiURL;
+    private baseUrl = environment.apiURL;
 
-  constructor(private httpClient: HttpClient) { }
+    constructor(private httpClient: HttpClient) {
+    }
 
-  getPostsByUser(email: string): Observable<Post[]> {
-    const uri = this.baseUrl + `/api/posts`;
+    getAllPosts(): Observable<Post[]> {
+        const uri = this.baseUrl + `/api/posts`;
+        return this.httpClient.get<Post[]>(uri, httpOptions);
+    }
 
-    const options = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      body: {
-        'user': email,
-      }
-    };
+    createPost(user: string, description: string, file: File): Observable<HttpResponse<ResponseMessage>> {
 
-    return this.httpClient.get<Post[]>(uri, httpOptions);
-  }
+        const uri = this.baseUrl + `/api/posts`;
+        const formData: FormData = new FormData();
 
-  createPost(user: string, description: string, file: File): Observable<HttpResponse<ResponseMessage>> {
+        formData.append('user', user);
+        formData.append('description', description);
+        formData.append('file', file, file.name);
 
-    const uri = this.baseUrl + `/api/posts`;
-    const formData: FormData = new FormData();
+        return this.httpClient.post<ResponseMessage>(uri, formData, {observe: 'response'});
 
-    formData.append('user', user);
-    formData.append('description', description);
-    formData.append('file', file, file.name);
+    }
 
-    return this.httpClient.post<ResponseMessage>(uri, formData, {observe: 'response'});
-
-  }
-
-  deletePost(postId: number): Observable<HttpResponse<ResponseMessage>> {
-    const uri = this.baseUrl + `/api/posts`;
-    return this.httpClient.post<ResponseMessage>(uri, {'id': postId}, {observe: 'response'});
-  }
+    deletePost(postId: number): Observable<HttpResponse<ResponseMessage>> {
+        const uri = this.baseUrl + `/api/posts`;
+        return this.httpClient.post<ResponseMessage>(uri, {'id': postId}, {observe: 'response'});
+    }
 
 }

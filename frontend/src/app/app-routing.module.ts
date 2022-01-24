@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule, Routes } from "@angular/router";
 import { FeedComponent} from "./feed/feed.component";
-import {StartScreenComponent} from "./start-screen/start-screen.component";
 import {PostDetailsComponent} from "./post-details/post-details.component";
 import {RegisterComponent} from "./register/register.component";
 import {LoginComponent} from "./login/login.component";
@@ -14,7 +13,7 @@ import {SearchResultsComponent} from "./search-results/search-results.component"
 
 // Change type of routes variable to 'Route'
 const routes: any = [
-  {path: '', component: StartScreenComponent},
+  {path: '', component: FeedComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},
   {path: 'feed', component: FeedComponent},
