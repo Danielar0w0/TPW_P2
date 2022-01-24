@@ -5,8 +5,14 @@ import {Observable} from "rxjs";
 import {Post} from "../../utils/post";
 import {ResponseMessage} from "../../utils/response_message";
 
+// TODO: Change by user token.
+let token = 'f359f28a56de55d192bc1a46b5d4733cf1d24531';
+
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    })
 }
 
 @Injectable({

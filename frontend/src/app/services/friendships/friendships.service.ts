@@ -1,13 +1,19 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {ResponseMessage} from "../../utils/response_message";
 import {Friendship} from "../../utils/friendship";
 import {QueryType} from "../../utils/query_type";
 
+// TODO: Change by user token.
+let token = 'f359f28a56de55d192bc1a46b5d4733cf1d24531';
+
 const httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    })
 }
 
 @Injectable({
@@ -24,9 +30,7 @@ export class FriendshipsService {
 
         const options = {
             headers: httpOptions.headers,
-            body: {
-                'current_user': user_email
-            }
+            params: new HttpParams().set('current_user', user_email)
         };
 
         return this.httpClient.get<Friendship[]>(uri, options);
