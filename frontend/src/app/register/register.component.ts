@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../services/auth/auth.service";
 import {Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
@@ -37,18 +37,28 @@ export class RegisterComponent implements OnInit {
     // @ts-ignore
     let password2 = this.registerForm.get("password2").value;
 
-    if (username === null || email === null || password === null || password2 === null)
+    if (username === null || email === null || password === null || password2 === null) {
+      window.alert("Please fill in all required fields.")
       return
-    if (password !== password2)
-      return;
+    }
 
-    if (this.authService.register(email, username, password)) {
-      window.alert("Login successful!");
-      setTimeout(() => {
-        window.location.replace("");
-      });
-    } else
-      window.alert("Login unsuccessful!");
+    if (password !== password2) {
+      window.alert("Passwords don't match.")
+      return;
+    }
+
+    this.authService.register(email, username, password).subscribe({
+        next: items => {
+          window.alert("Registration successful!");
+          setTimeout(() => {
+            window.location.replace("/login");
+          });
+        },
+        error: err => {
+          window.alert(err.message);
+        },
+      }
+    )
 
     this.registerForm.reset();
   }

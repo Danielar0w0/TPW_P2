@@ -18,27 +18,42 @@ export class LoginComponent implements OnInit {
   }
 
   loginForm = this.formBuilder.group({
-    username: '',
+    email: '',
     password: ''
   });
 
   onSubmit() {
 
     // @ts-ignore
-    let username = this.loginForm.get("username").value;
+    let email = this.loginForm.get("email").value;
     // @ts-ignore
     let password = this.loginForm.get("password").value;
 
-    if (username === null || password === null)
+    if (email === null || password === null)
       return
 
-    if (this.authService.login(username, password)) {
-      window.alert("Login successful!");
-      setTimeout(() => {
-        window.location.replace("");
-      });
-    } else
-      window.alert("Login unsuccessful!");
+    this.authService.login(email, password).subscribe({
+        next: items => {
+
+          let values = ['token', 'user_id', 'email'];
+          for (let param in values) {
+            if (!(values[param] in items)) {
+              window.alert("Something went wrong! Try again.");
+              return;
+            }
+          }
+
+          localStorage.setItem('user', JSON.stringify(items));
+          window.alert("Login successful!");
+          setTimeout(() => {
+            window.location.replace("");
+          }, 1000);
+        },
+        error: err => {
+          window.alert(err.message);
+        },
+      }
+    );
 
     this.loginForm.reset();
   }
