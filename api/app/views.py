@@ -99,11 +99,10 @@ class PostsView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
-    def get(request):
+    def get(request, user_email=None):
 
-        if 'user' in request.data:
+        if user_email is not None:
 
-            user_email = request.data["user"]
             user_exists = AppUser.objects.filter(user_email=user_email).exists()
 
             if not user_exists:
@@ -269,20 +268,19 @@ class FriendshipsView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
-    def get(request):
+    def get(request, user_email=None):
 
-        if 'current_user' not in request.data:
-            return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
+        if user_email is None:
+            return JsonResponse({"message": "Invalid request (Missing path variable)."}, status=status.HTTP_400_BAD_REQUEST)
 
-        current_user_email = request.data['current_user']
-        user_exists = AppUser.objects.filter(user_email=current_user_email).exists()
+        user_exists = AppUser.objects.filter(user_email=user_email).exists()
 
         if not user_exists:
-            return JsonResponse({"message": "Unable to find user {}.".format(current_user_email)},
+            return JsonResponse({"message": "Unable to find user {}.".format(user_email)},
                                 status=status.HTTP_404_NOT_FOUND)
 
         try:
-            all_friendships = Friendship.objects.get(first_user__user_email=current_user_email)
+            all_friendships = Friendship.objects.get(first_user__user_email=user_email)
         except Friendship.DoesNotExist:
             return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
@@ -371,11 +369,11 @@ class MessagesView(APIView):
     @staticmethod
     def get(request):
 
-        if 'current_user' not in request.data or 'receptor' not in request.data:
+        if 'current_user' not in request.GET or 'receptor' not in request.GET:
             return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
 
-        current_user_email = request.data["current_user"]
-        receptor_user_email = request.data["receptor"]
+        current_user_email = request.GET["current_user"]
+        receptor_user_email = request.GET["receptor"]
 
         app_auth = AppAuthorizer(request)
 
@@ -435,7 +433,10 @@ class MessagesQueryView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @staticmethod
-    def get(request, user_email):
+    def get(request, user_email=None):
+
+        if user_email is None:
+            return JsonResponse({"message": "Invalid request (Missing path variable)."}, status=status.HTTP_400_BAD_REQUEST)
 
         app_auth = AppAuthorizer(request)
 
@@ -460,11 +461,11 @@ class SearchQueryView(APIView):
     @staticmethod
     def get(request):
 
-        if 'query_type' not in request.data or 'query' not in request.data:
+        if 'query_type' not in request.GET or 'query' not in request.GET:
             return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
 
-        query_type = request.data['query_type']
-        query = request.data['query']
+        query_type = request.GET['query_type']
+        query = request.GET['query']
 
         if query_type == QueryType.USER_NAME.name:
 
