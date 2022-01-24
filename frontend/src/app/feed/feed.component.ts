@@ -16,7 +16,7 @@ export class FeedComponent implements OnInit {
     user!: User;
 
     constructor(private postsService: PostsService, private friendshipsService: FriendshipsService, private usersService: UsersService) {
-        this.user = new User('test@ua.pt', 'test', 'test', 'trending-design.png', false)
+        this.user = new User('hugogoncalves13@ua.pt', 'hugo', 'hugo', 'trending-design.png', false)
         this.posts = [];
     }
 
@@ -26,7 +26,10 @@ export class FeedComponent implements OnInit {
 
             friendships.forEach(friendship => {
 
+                alert(friendship)
+
                 this.usersService.getUserPosts(friendship.second_user.email).subscribe(posts => {
+                    alert(posts)
                     posts.forEach(post => this.posts.push(post));
                 });
 
