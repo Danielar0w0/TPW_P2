@@ -25,18 +25,6 @@ export class FriendshipsService {
 
     constructor(private httpClient: HttpClient) { }
 
-    getFriendships(user_email: string): Observable<Friendship[]> {
-        const uri = this.baseUrl + `/api/friendships`;
-
-        const options = {
-            headers: httpOptions.headers,
-            params: new HttpParams().set('current_user', user_email)
-        };
-
-        return this.httpClient.get<Friendship[]>(uri, options);
-
-    }
-
     createFriendship(current_user: string, other_user: string): Observable<HttpResponse<ResponseMessage>> {
         const uri = this.baseUrl + `/api/friendships`;
         return this.httpClient.post<ResponseMessage>(uri, {
