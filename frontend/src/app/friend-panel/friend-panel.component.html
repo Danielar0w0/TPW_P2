@@ -4,15 +4,15 @@
     </div>
     <div class="card-body">
         <p class="card-text"> {{ friend.username }} <br>
-            <small class="text-muted">{{ friend.email }}</small>
+            <small class="text-muted">{{ friend.user_email }}</small>
         </p>
 
         <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
                 <!-- TODO: Add Unfollow -->
-                <button class="btn btn-primary">Unfollow</button>
+                <button class="btn btn-primary" (click)="unfollowUser()">Unfollow</button>
                 <button class="btn btn-outline-primary"
-                        routerLink="profile/{{ friend.email }}">Profile
+                        routerLink="profile/{{ friend.user_email }}">Profile
                 </button>
             </div>
         </div>

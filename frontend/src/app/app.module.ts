@@ -23,6 +23,9 @@ import { FeedPostComponent } from './feed-post/feed-post.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from "@angular/forms";
 import { FriendPanelComponent } from './friend-panel/friend-panel.component';
+import { ProfilePostComponent } from './profile-post/profile-post.component';
+import { CreatePostModalComponent } from './create-post-modal/create-post-modal.component';
+import { InfoModalComponent } from './info-modal/info-modal.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +46,9 @@ import { FriendPanelComponent } from './friend-panel/friend-panel.component';
     CreatePostComponent,
     FeedPostComponent,
     FriendPanelComponent,
+    ProfilePostComponent,
+    CreatePostModalComponent,
+    InfoModalComponent,
   ],
   imports: [
     BrowserModule,
