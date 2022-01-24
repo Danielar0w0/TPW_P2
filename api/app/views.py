@@ -58,17 +58,16 @@ class RegisterView(APIView):
         if serializer.is_valid(raise_exception=True):
             password = serializer.validated_data['password']
             hashed_password = make_password(password, hasher='bcrypt_sha256')
-
-            django_user = User(username=serializer.validated_data['username'],
-                               email=serializer.validated_data['user_email'], password=hashed_password)
-            django_user.save()
-
             image_field = request.data['image'] if 'image' in request.data else None
 
             app_user = AppUser(username=serializer.validated_data['username'],
                                user_email=serializer.validated_data['user_email'], password=hashed_password,
                                image=image_field)
             app_user.save()
+
+            django_user = User(username=serializer.validated_data['username'],
+                               email=serializer.validated_data['user_email'], password=hashed_password)
+            django_user.save()
 
             return JsonResponse({"message": "User registered."}, status=status.HTTP_201_CREATED)
 
