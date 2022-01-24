@@ -3,6 +3,7 @@ import {environment} from "../../../environments/environment";
 import {catchError, Observable, throwError} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Session} from "../../utils/session";
+import {Comment} from "../../utils/comment";
 
 const httpOptions = {
   headers: new HttpHeaders({

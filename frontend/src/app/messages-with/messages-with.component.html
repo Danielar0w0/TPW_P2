@@ -12,23 +12,23 @@
            style="background-image: url('./assets/images/abstract_polygons_wallpaper_by_cratemuncher-d6ys3ge.png'); background-repeat: no-repeat; background-size: cover; border: lightblue">
         <div class="row d-flex mx-4">
           <div *ngFor="let message of messages">
-            <div *ngIf="message.sender.user_email == current_user.user_email">
+            <div *ngIf="session !== null && message.sender == session.email">
               <div class="row py-2 my-2 justify-content-end">
                 <div class="col-3 my-auto py-3 rounded" style="background-color: rgba(0,48,106,0.48);">
                   <p class="card-text text-end" style="color: white">{{ message.content }}</p>
                 </div>
                 <div class="col-1">
-                  <img src="./assets/media/{{ message.sender.image }}" class="rounded-circle"
+                  <img src="./assets/media/{{ message.sender }}" class="rounded-circle"
                        style="object-fit:cover; width: 70px; height: 70px;"
                        onerror="this.onerror=null;this.src='./assets/images/user2.png';">
                 </div>
               </div>
             </div>
 
-            <div *ngIf="message.receiver.user_email == current_user.user_email">
+            <div *ngIf="session !== null && message.receiver == session.email">
               <div class="row py-2 my-2">
                 <div class="col-1">
-                  <img src="./assets/media/{{ message.sender.image }}" class="rounded-circle"
+                  <img src="./assets/media/{{ message.sender }}" class="rounded-circle"
                        style="object-fit:cover; width: 70px; height: 70px;"
                        onerror="this.onerror=null;this.src='./assets/images/user2.png';">
                 </div>
@@ -54,12 +54,12 @@
       <form action="/messages/{{ other_user.username }}" method="POST">
 
         <div class="col-6 pt-4">
-          <input type="text" class="form-control" rows="4">
+          <input name="messageInput" type="text" class="form-control" rows="4" [(ngModel)]="current_message">
         </div>
 
         <div class="form-group pt-4">
           <input type="hidden" name="other_user" value="{{ other_user.username }}">
-          <input class="btn btn-primary" type="submit" value="Send">
+          <input class="btn btn-primary" type="submit" value="Send" (click)="sendMessage()">
         </div>
 
       </form>

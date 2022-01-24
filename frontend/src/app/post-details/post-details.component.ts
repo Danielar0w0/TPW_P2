@@ -5,6 +5,8 @@ import {User} from "../utils/user";
 import {ActivatedRoute} from "@angular/router";
 import {PostsService} from "../services/posts/posts.service";
 import {environment} from "../../environments/environment";
+import {CommentsService} from "../services/comments/comments.service";
+import {UsersService} from "../services/users/users.service";
 
 @Component({
     selector: 'app-post-details',
@@ -17,7 +19,7 @@ export class PostDetailsComponent implements OnInit {
     postOwner: User;
     comments: Comment[];
 
-    constructor(private route: ActivatedRoute, private postsService: PostsService) {
+    constructor(private route: ActivatedRoute, private postsService: PostsService, private commentsService: CommentsService, private usersService: UsersService) {
         this.postOwner = User.getNullUser();
         this.comments = []
     }
@@ -36,6 +38,27 @@ export class PostDetailsComponent implements OnInit {
                         if (post.file !== null)
                             post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
                         this.post = post;
+                    }
+                });
+
+            this.commentsService.getPostComments(postId)
+                .subscribe({
+                    error: err => console.log('Error getting post comments: ' + err.toString()),
+                    next: comments => {
+
+                        comments.forEach(comment => {
+
+                            this.usersService.getUser(comment.user)
+                                .subscribe({
+                                    error: err => console.error("Error getting user by email on Post Details: " + err.toString()),
+                                    next: user => {
+                                        comment.user = user.username;
+                                    }
+                                });
+
+                        })
+
+                        this.comments = comments;
                     }
                 });
 
