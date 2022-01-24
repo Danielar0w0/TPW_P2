@@ -5,6 +5,7 @@ import {PostsService} from "../services/posts/posts.service";
 import {FriendshipsService} from "../services/friendships/friendships.service";
 import {UsersService} from "../services/users/users.service";
 import {environment} from "../../environments/environment";
+import {Session} from "../utils/session";
 
 @Component({
     selector: 'app-feed',
@@ -14,16 +15,18 @@ import {environment} from "../../environments/environment";
 export class FeedComponent implements OnInit {
 
     posts: Post[];
-    user!: User;
+    session!: Session | null;
 
     constructor(private postsService: PostsService, private friendshipsService: FriendshipsService, private usersService: UsersService) {
-        this.user = new User('hugogoncalves13@ua.pt', 'hugo', 'hugo', 'trending-design.png', false)
         this.posts = [];
+        this.session = Session.getCurrentSession();
     }
 
     ngOnInit(): void {
 
-        this.usersService.getUserFriendships(this.user.email).subscribe(friendships => {
+        if (this.session === null) return;
+
+        this.usersService.getUserFriendships(this.session.email).subscribe(friendships => {
 
             friendships.forEach(friendship => {
 

@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {User} from "../utils/user";
 import {UsersService} from "../services/users/users.service";
+import {Session} from "../utils/session";
 
 @Component({
     selector: 'FriendPanel',
@@ -15,6 +16,12 @@ export class FriendPanelComponent implements OnInit {
     }
 
     ngOnInit(): void {
+    }
+
+    unfollowUser() {
+
+        let currentUserEmail = Session.getCurrentSession();
+
     }
 
 }

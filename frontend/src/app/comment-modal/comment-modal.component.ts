@@ -3,6 +3,7 @@ import {Post} from "../utils/post";
 import {User} from "../utils/user";
 import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 import {CommentsService} from "../services/comments/comments.service";
+import {Session} from "../utils/session";
 
 @Component({
     selector: 'app-comment-modal',
@@ -12,13 +13,14 @@ import {CommentsService} from "../services/comments/comments.service";
 export class CommentModalComponent implements OnInit {
 
     @Input() post!: Post;
-    @Input() user_profile!: User;
+    session: Session | null;
 
     comment_content?: string;
     submitted?: boolean;
     statusMessage?: string;
 
     constructor(private commentsService: CommentsService, private modal: NgbActiveModal) {
+        this.session = Session.getCurrentSession();
         this.submitted = false;
     }
 
@@ -31,8 +33,8 @@ export class CommentModalComponent implements OnInit {
     }
 
     submitComment() {
-        if (this.comment_content !== undefined) {
-            this.commentsService.createComment(this.post.post_id, this.user_profile.email, this.comment_content)
+        if (this.comment_content !== undefined && this.session !== null) {
+            this.commentsService.createComment(this.post.post_id, this.session.email, this.comment_content)
                 .subscribe({
                     error: err => {
                         this.statusMessage = 'Error submitting the comment.';

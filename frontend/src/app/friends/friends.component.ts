@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../utils/user";
 import {UsersService} from "../services/users/users.service";
+import {Session} from "../utils/session";
 
 @Component({
     selector: 'app-friends',
@@ -9,17 +10,19 @@ import {UsersService} from "../services/users/users.service";
 })
 export class FriendsComponent implements OnInit {
 
-    user!: User;
+    session!: Session | null;
     friends!: User[];
 
     constructor(private usersService: UsersService) {
-        this.user = new User("hugogoncalves13@ua.pt", "hugo", "hugo", "", false);
+        this.session = Session.getCurrentSession();
         this.friends = [];
     }
 
     ngOnInit(): void {
 
-        this.usersService.getUserFriendships(this.user.email)
+        if (this.session === null) return;
+
+        this.usersService.getUserFriendships(this.session.email)
             .subscribe({
                 error: err => {
                     console.log("Error obtaining user's friends: " + err);
@@ -31,7 +34,7 @@ export class FriendsComponent implements OnInit {
                         this.usersService.getUser(friendship.second_user)
                             .subscribe({
                                 error: err => {
-                                    console.log("Error obtaining user by friendship.");
+                                    console.log("Error obtaining user by friendship: " + err);
                                 },
                                 next: user => {
                                     this.friends.push(user);
