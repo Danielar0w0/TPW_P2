@@ -63,9 +63,14 @@ class RegisterView(APIView):
                                email=serializer.validated_data['user_email'], password=hashed_password)
             django_user.save()
 
-            app_user = AppUser(username=serializer.validated_data['username'],
+            if 'image' in request.data:
+                app_user = AppUser(username=serializer.validated_data['username'],
                                user_email=serializer.validated_data['user_email'], password=hashed_password,
                                image=request.data['image'])
+            else:
+                app_user = AppUser(username=serializer.validated_data['username'],
+                                   user_email=serializer.validated_data['user_email'], password=hashed_password)
+
             app_user.save()
 
             return JsonResponse({"message": "User registered."}, status=status.HTTP_201_CREATED)

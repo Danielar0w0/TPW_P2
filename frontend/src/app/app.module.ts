@@ -20,6 +20,7 @@ import { SearchResultsComponent } from './search-results/search-results.componen
 import { MessagesWithComponent } from './messages-with/messages-with.component';
 import { CreatePostComponent } from './create-post/create-post.component';
 import {HttpClientModule} from "@angular/common/http";
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import {HttpClientModule} from "@angular/common/http";
     AppRoutingModule,
     ModalModule,
     HttpClientModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
