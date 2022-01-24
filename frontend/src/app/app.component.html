@@ -1,8 +1,8 @@
-<!-- TODO: Remove hardcoded conditions -->
-<div *ngIf="true">
+
+<div *ngIf="loggedIn()">
   <app-navbar></app-navbar>
 </div>
-<div *ngIf="false">
+<div *ngIf="!loggedIn()">
   <nav class="navbar navbar-expand-lg navbar-light bg-dark py-4 px-4">
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">

@@ -18,6 +18,7 @@ import { SearchResultsComponent } from './search-results/search-results.componen
 import { MessagesWithComponent } from './messages-with/messages-with.component';
 import { CreatePostComponent } from './create-post/create-post.component';
 import {HttpClientModule} from "@angular/common/http";
+import {ReactiveFormsModule} from "@angular/forms";
 import { FeedPostComponent } from './feed-post/feed-post.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from "@angular/forms";
@@ -43,14 +44,15 @@ import { FriendPanelComponent } from './friend-panel/friend-panel.component';
     FeedPostComponent,
     FriendPanelComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ModalModule,
-        HttpClientModule,
-        NgbModule,
-        FormsModule,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ModalModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgbModule,
+    FormsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
