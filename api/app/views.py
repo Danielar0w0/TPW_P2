@@ -462,7 +462,7 @@ class MessagesQueryView(APIView):
             return JsonResponse({"message": "Unable to find the user {}.".format(user_email)},
                                 status=status.HTTP_404_NOT_FOUND)
 
-        all_messages_entities = Message.objects.filter(sender__user_email=user_email)
+        all_messages_entities = Message.objects.filter(Q(sender__user_email=user_email) | Q(receiver__user_email=user_email))
 
         serializer = MessageSerializer(all_messages_entities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
