@@ -4,6 +4,7 @@ import {Comment} from "../utils/comment";
 import {User} from "../utils/user";
 import {ActivatedRoute} from "@angular/router";
 import {PostsService} from "../services/posts/posts.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-post-details',
@@ -27,6 +28,16 @@ export class PostDetailsComponent implements OnInit {
 
             let postId = parameters['id'];
             if (postId === undefined) return;
+
+            this.postsService.getPostById(postId)
+                .subscribe({
+                    error: err => console.log('Error getting post by id: ' + err.toString()),
+                    next: post => {
+                        if (post.file !== null)
+                            post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
+                        this.post = post;
+                    }
+                });
 
         });
 

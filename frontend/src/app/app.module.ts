@@ -26,6 +26,7 @@ import { FriendPanelComponent } from './friend-panel/friend-panel.component';
 import { ProfilePostComponent } from './profile-post/profile-post.component';
 import { CreatePostModalComponent } from './create-post-modal/create-post-modal.component';
 import { InfoModalComponent } from './info-modal/info-modal.component';
+import { CommentPanelComponent } from './comment-panel/comment-panel.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { InfoModalComponent } from './info-modal/info-modal.component';
     ProfilePostComponent,
     CreatePostModalComponent,
     InfoModalComponent,
+    CommentPanelComponent,
   ],
   imports: [
     BrowserModule,

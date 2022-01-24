@@ -28,6 +28,11 @@ export class PostsService {
         return this.httpClient.get<Post[]>(uri, httpOptions);
     }
 
+    getPostById(postId: number): Observable<Post> {
+        const uri = this.baseUrl + `/api/posts`;
+        return this.httpClient.get<Post>(uri, {headers: httpOptions.headers, params: {'id': postId}});
+    }
+
     createPost(user: string, description: string, file: File): Observable<HttpResponse<ResponseMessage>> {
 
         const uri = this.baseUrl + `/api/posts`;
