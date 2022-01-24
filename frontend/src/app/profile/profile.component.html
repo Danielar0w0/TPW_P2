@@ -46,12 +46,12 @@
 
                   <!-- TODO: If user is authenticated -->
                   <button type="button" class="btn btn-sm btn-outline-primary"
-                          data-toggle="modal" (click)="commentModal.show()">Comment
+                          data-toggle="modal">Comment
                   </button>
 
                   <div *ngIf="user_profile.email == current_user.email">
                     <button type="button" class="btn btn-sm btn-outline-secondary mx-2"
-                            data-toggle="modal" (click)="deleteModal.show()">
+                            data-toggle="modal">
                       Delete
                     </button>
                   </div>
@@ -64,8 +64,8 @@
           </div>
         </div>
 
-        <app-delete-modal #deleteModal [post]="post"></app-delete-modal>
-        <app-comment-modal #commentModal [post]="post" [user_profile]="user_profile"></app-comment-modal>
+        <!--<app-delete-modal #deleteModal [post]="post"></app-delete-modal>-->
+        <!--<app-comment-modal #commentModal [post]="post" [user_profile]="user_profile"></app-comment-modal>-->
 
       </div>
 

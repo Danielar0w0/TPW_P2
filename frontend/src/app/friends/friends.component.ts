@@ -1,22 +1,49 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {User} from "../utils/user";
+import {UsersService} from "../services/users/users.service";
 
 @Component({
-  selector: 'app-friends',
-  templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.css']
+    selector: 'app-friends',
+    templateUrl: './friends.component.html',
+    styleUrls: ['./friends.component.css']
 })
 export class FriendsComponent implements OnInit {
 
-  users: User[] = [];
+    user!: User;
+    friends!: User[];
 
-  constructor() {
-    this.users = [
-      new User('friend@ua.pt', 'friend', 'friend', 'trending-design.png', false)
-    ]
-  }
+    constructor(private usersService: UsersService) {
+        this.user = new User("hugogoncalves13@ua.pt", "hugo", "hugo", "", false);
+        this.friends = [];
+    }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+
+        this.usersService.getUserFriendships(this.user.email)
+            .subscribe({
+                error: err => {
+                    console.log("Error obtaining user's friends: " + err);
+                },
+                next: friendships => {
+
+                    friendships.forEach(friendship => {
+
+                        this.usersService.getUser(friendship.second_user)
+                            .subscribe({
+                                error: err => {
+                                    console.log("Error obtaining user by friendship.");
+                                },
+                                next: user => {
+                                    this.friends.push(user);
+                                }
+                            })
+
+                    });
+
+                }
+
+            });
+
+    }
 
 }

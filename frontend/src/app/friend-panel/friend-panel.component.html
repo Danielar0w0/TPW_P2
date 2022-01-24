@@ -1,0 +1,20 @@
+<div class="card shadow-sm">
+    <div class="row text-center">
+        <img style="max-width: 10rem" src="./assets/media/{{ friend.image }}" onerror="this.onerror=null; this.src='./assets/images/user2.png'" alt="User Picture">
+    </div>
+    <div class="card-body">
+        <p class="card-text"> {{ friend.username }} <br>
+            <small class="text-muted">{{ friend.email }}</small>
+        </p>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+                <!-- TODO: Add Unfollow -->
+                <button class="btn btn-primary">Unfollow</button>
+                <button class="btn btn-outline-primary"
+                        routerLink="profile/{{ friend.email }}">Profile
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

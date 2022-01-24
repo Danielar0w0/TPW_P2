@@ -1,55 +1,54 @@
 <div *ngIf="post !== undefined">
-  <div class="card shadow-sm">
-    <div class="card-header">
-      <div class="d-flex flex-row">
-        <div class="p-1">
-          <img src="/media/{{ post.user.image }}" style="object-fit: scale-down; max-height: 50px; max-width: 50px;"
-               onerror="this.onerror=null; this.src='../../assets/download.jpg'" alt="profile_picture">
-        </div>
-        <div class="p-2 my-auto">
-          <p class="m-0 p-0"><strong>{{ post.user.username }}</strong> posted...</p>
-        </div>
-      </div>
-    </div>
-    <img src="./assets/media/{{ post.file }}" class="card-img-top py-3"
-         style="object-fit: scale-down; max-height: 250px" alt="Post Image">
-    <div class="card-body">
-      <p class="card-text">{{ post.description }}</p>
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="btn-group">
-          <form action="/post_details/{{ post.post_id }}">
-            <button id="view-button" type="submit" class="btn btn-sm btn-primary me-2">View
-            </button>
-          </form>
-          <a href="#comments_div_{{ post.post_id }}">
-            <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="collapse">Comment</button>
-          </a>
-        </div>
-        <small class="text-muted px-4">{{ post.date | date: 'short' }}</small>
-      </div>
-      <div id="comments_div_{{ post.post_id }}" class="row collapse m-3">
-        <p class="fw-bolder p-0 mb-2">Commenting as {{ post.user.username }}</p>
 
-        <form action="/comment/" method="post" class="form-horizontal">
-
-          <input type="hidden" name="redirect_uri" value="/feed">
-          <input type="hidden" name="post_id" value="{{ post.post_id }}">
-          <input type="hidden" name="user_email" value="{{ post.user.email }}">
-
-          <div class="row">
-            <!-- TODO: Comment Form -->
-          </div>
-          <div class="row mt-2">
-            <div class="col-2 m-0 p-0">
-              <input type="submit" value="Save"
-                     class="btn btn-primary input-block-level m-0"/>
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <div class="d-flex flex-row">
+                <div class="p-1">
+                    <img src="/media/{{ post.user.image }}"
+                         style="object-fit: scale-down; max-height: 50px; max-width: 50px;"
+                         onerror="this.onerror=null; this.src='../../assets/download.jpg'" alt="profile_picture">
+                </div>
+                <div class="p-2 my-auto">
+                    <p class="m-0 p-0"><strong>{{ post.user.username }}</strong> posted...</p>
+                </div>
             </div>
-          </div>
+        </div>
+        <img src="{{ post.file }}" class="card-img-top py-3"
+             style="object-fit: scale-down; max-height: 250px" alt="Post Image">
 
-        </form>
+        <div class="card-body">
+            <p class="card-text">{{ post.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                    <button id="view-button" type="submit" class="btn btn-sm btn-primary me-2">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="collapse" (click)="openModal()">Comment</button>
+                </div>
+                <small class="text-muted px-4">{{ post.date | date: 'short' }}</small>
+            </div>
 
-      </div>
+            <div id="comments_div_{{ post.post_id }}" class="row collapse m-3">
+                <p class="fw-bolder p-0 mb-2">Commenting as {{ post.user.username }}</p>
+
+                <form class="form-horizontal">
+
+                    <input type="hidden" name="redirect_uri" value="/feed">
+                    <input type="hidden" name="post_id" value="{{ post.post_id }}">
+                    <input type="hidden" name="user_email" value="{{ post.user.email }}">
+
+                    <div class="row">
+                        <!-- TODO: Comment Form -->
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-2 m-0 p-0">
+                            <input type="submit" value="Save"
+                                   class="btn btn-primary input-block-level m-0"/>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
     </div>
-  </div>
 
 </div>

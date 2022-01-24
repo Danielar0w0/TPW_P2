@@ -4,6 +4,7 @@ import {Post} from "../utils/post";
 import {PostsService} from "../services/posts/posts.service";
 import {FriendshipsService} from "../services/friendships/friendships.service";
 import {UsersService} from "../services/users/users.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-feed',
@@ -26,11 +27,12 @@ export class FeedComponent implements OnInit {
 
             friendships.forEach(friendship => {
 
-                alert(friendship)
-
-                this.usersService.getUserPosts(friendship.second_user.email).subscribe(posts => {
-                    alert(posts)
-                    posts.forEach(post => this.posts.push(post));
+                this.usersService.getUserPosts(friendship.second_user).subscribe(posts => {
+                    posts.forEach(post => {
+                        if (post.file !== null)
+                            post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
+                        this.posts.push(post);
+                    });
                 });
 
             });

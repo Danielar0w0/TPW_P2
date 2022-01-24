@@ -1,50 +1,36 @@
 <div class="py-5">
 
-  <div class="container">
+    <div class="container">
 
-    <h2 class="fw-bolder">Following</h2>
+        <h2 class="fw-bolder">Following</h2>
 
-    <div class="container-fluid py-5">
-      <form action="/search/" method="post" class="px-4 input-group w-auto">
+        <div class="container-fluid py-5">
+            <form action="/search/" method="post" class="px-4 input-group w-auto">
 
-        <input type="search" name="query_friend" class="form-control rounded"
-               placeholder="Search for who you're following..." aria-label="Search"/>
-        <input type="submit" class="btn btn-primary" value="Search"/>
-      </form>
-    </div>
-
-    <div *ngIf="users.length > 0">
-      <div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 g-3">
-
-        <div *ngFor="let friend of users">
-          <div class="col">
-            <div class="card shadow-sm">
-              <img src="./assets/media/{{ friend.image }}" onerror="this.onerror=null; this.src='./assets/images/user2.png'">
-              <div class="card-body">
-                <p class="card-text"> {{ friend.username }} <br>
-                  <small class="text-muted">{{ friend.email }}</small>
-                </p>
-
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="btn-group">
-                    <!-- TODO: Add Unfollow -->
-                    <button class="btn btn-primary">Unfollow</button>
-                    <button class="btn btn-outline-primary"
-                            routerLink="profile/{{ friend.email }}">Profile
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                <input type="search" name="query_friend" class="form-control rounded"
+                       placeholder="Search for who you're following..." aria-label="Search"/>
+                <input type="submit" class="btn btn-primary" value="Search"/>
+            </form>
         </div>
-      </div>
-    </div>
 
-    <div *ngIf="users.length == 0">
-      <div class="container text-center mt-4">
-        <p class="fw-light">You are not following anyone.</p>
-      </div>
+        <div *ngIf="friends.length > 0; then showFriends else noFriends"></div>
+
+        <ng-template #showFriends>
+            <div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 g-3">
+
+                <div *ngFor="let friend of friends">
+                    <div class="col">
+                        <FriendPanel [friend]="friend"></FriendPanel>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #noFriends>
+            <div class="container text-center mt-4">
+                <p class="fw-light">You are not following anyone.</p>
+            </div>
+        </ng-template>
+
     </div>
-  </div>
 </div>

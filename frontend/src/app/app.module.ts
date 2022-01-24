@@ -19,6 +19,9 @@ import { MessagesWithComponent } from './messages-with/messages-with.component';
 import { CreatePostComponent } from './create-post/create-post.component';
 import {HttpClientModule} from "@angular/common/http";
 import { FeedPostComponent } from './feed-post/feed-post.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {FormsModule} from "@angular/forms";
+import { FriendPanelComponent } from './friend-panel/friend-panel.component';
 
 @NgModule({
   declarations: [
@@ -38,13 +41,16 @@ import { FeedPostComponent } from './feed-post/feed-post.component';
     MessagesWithComponent,
     CreatePostComponent,
     FeedPostComponent,
+    FriendPanelComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ModalModule,
-    HttpClientModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        ModalModule,
+        HttpClientModule,
+        NgbModule,
+        FormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
