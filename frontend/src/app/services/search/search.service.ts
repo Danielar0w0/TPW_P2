@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {QueryType} from "../../utils/query_type";
+import {Session} from "../../utils/session";
 
 @Injectable({
     providedIn: 'root'
@@ -19,13 +20,12 @@ export class SearchService {
 
         const uri = this.baseUrl + `/api/search`;
 
-        // @ts-ignore
-        let user = JSON.parse(localStorage.getItem('user'));
-
         let httpOptions = {
-            headers: new HttpHeaders({'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + user.token}),
-            params: new HttpParams().set('query_type', QueryType[queryType]).set('query', query)
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + Session.getCurrentSession()?.token
+            }),
+            params: {'query_type': QueryType[queryType], 'query': query}
         };
 
         return this.httpClient.post(uri, httpOptions);
