@@ -29,11 +29,27 @@ export class MessagesComponent implements OnInit {
                 next: messages => {
                     messages.forEach(message => {
 
-                        this.usersService.getUser(message.receiver)
-                            .subscribe({
-                                error: err => console.error("Error getting user by receiver email: " + err.toString()),
-                                next: user => this.users.push(user)
-                            });
+                        if (this.session?.email === message.sender) {
+
+                            this.usersService.getUser(message.receiver)
+                                .subscribe({
+                                    error: err => console.error("Error getting user by receiver email: " + err.toString()),
+                                    next: user => {
+                                        if (this.users.filter(userFiltered => userFiltered.user_email === user.user_email).length <= 0)
+                                            this.users.push(user)
+                                    }
+                                });
+
+                        } else {
+                            this.usersService.getUser(message.sender)
+                                .subscribe({
+                                    error: err => console.error("Error getting user by receiver email: " + err.toString()),
+                                    next: user => {
+                                        if (this.users.filter(userFiltered => userFiltered.user_email === user.user_email).length <= 0)
+                                            this.users.push(user)
+                                    }
+                                });
+                        }
 
                     });
                 }

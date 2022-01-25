@@ -42,11 +42,21 @@ export class MessagesWithComponent implements OnInit {
 
             if (this.session === undefined || this.session === null) return;
 
-            this.messagesService.getMessagesFromUser(this.session.email, receiverEmail)
+            this.usersService.getUserMessages(this.session.email)
                 .subscribe({
                     error: err => console.error("Error getting messages: " + err.toString()),
-                    next: messages => this.messages = messages
-                })
+                    next: messages => {
+                        messages.forEach(message => this.messages.push(message))
+                    }
+                });
+
+            this.messagesService.getMessagesFromUser(receiverEmail, this.session.email)
+                .subscribe({
+                    error: err => console.error("Error getting messages: " + err.toString()),
+                    next: messages => {
+                        messages.forEach(message => this.messages.push(message))
+                    }
+                });
 
         });
 
