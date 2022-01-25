@@ -4,21 +4,22 @@
 
     <h2 class="fw-bolder">Following</h2>
 
+      <!--
     <div class="container-fluid py-5">
-      <form action="/search/" method="post" class="px-4 input-group w-auto">
-
-        <input type="search" name="query_friend" class="form-control rounded"
+      <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="px-4 input-group w-auto">
+        <input type="search" name="query_friend" class="form-control rounded" formControlName="query_friend"
                placeholder="Search for who you're following..." aria-label="Search"/>
         <input type="submit" class="btn btn-primary" value="Search"/>
       </form>
     </div>
+    -->
 
     <div *ngIf="users.length > 0">
       <div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 g-3">
 
         <div *ngFor="let friend of users">
           <div class="col">
-            <div class="card shadow-sm">
+              <div class="card shadow-sm">
               <img src="./assets/media/{{ friend.image }}" onerror="this.onerror=null; this.src='./assets/images/user2.png'">
               <div class="card-body">
                 <p class="card-text"> {{ friend.username }} <br>

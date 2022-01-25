@@ -1,22 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {User} from "../utils/user";
+import {FormBuilder} from '@angular/forms';
+import {Router} from "@angular/router";
+import {SearchService} from "../services/search/search.service";
 
 @Component({
-  selector: 'app-friends',
-  templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.css']
+    selector: 'app-friends',
+    templateUrl: './friends.component.html',
+    styleUrls: ['./friends.component.css']
 })
 export class FriendsComponent implements OnInit {
 
-  users: User[] = [];
+    users: User[] = [];
+    searchForm = this.formBuilder.group({
+        query_friend: ''
+    });
 
-  constructor() {
-    this.users = [
-      new User('friend@ua.pt', 'friend', 'friend', 'trending-design.png', false)
-    ]
-  }
+    constructor(private searchService: SearchService, private router: Router, private formBuilder: FormBuilder,) {
+    }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
+
+    onSubmit() {
+
+        // @ts-ignore
+        let query = this.loginForm.get("query_friend").value;
+        if (query === null)
+            return ;
+
+        // this.searchService.performSearch(query).subscribe(
+
+
+    }
 
 }

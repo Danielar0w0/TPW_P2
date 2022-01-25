@@ -32,12 +32,12 @@ export class UsersService {
         return this.httpClient.get<User>(uri, httpOptions);
     }
 
-    getUserPosts(email: string): Observable<Post[]> {
+    getUserPosts(email: string | undefined): Observable<Post[]> {
         const uri = this.baseUrl + `/api/user/${email}/posts`;
         return this.httpClient.get<Post[]>(uri, httpOptions);
     }
 
-    getUserFriendships(email: string): Observable<Friendship[]> {
+    getUserFriendships(email: string | undefined): Observable<Friendship[]> {
         const uri = this.baseUrl + `/api/user/${email}/friendships`;
         return this.httpClient.get<Friendship[]>(uri, httpOptions);
     }
