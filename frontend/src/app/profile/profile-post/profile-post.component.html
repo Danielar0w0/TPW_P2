@@ -20,7 +20,7 @@
                             data-toggle="modal" (click)="commentPost()">Comment
                     </button>
 
-                    <div *ngIf="session !== null && userProfile.user_email === session.email">
+                    <div *ngIf="session !== null && userEmail === session.email">
                         <button type="button" class="btn btn-sm btn-outline-secondary mx-2"
                                 data-toggle="modal" (click)="deletePost()">
                             Delete
@@ -29,7 +29,6 @@
 
                 </div>
                 <small class="text-muted px-1"> {{ post.date | date: "short" }}</small>
-
             </div>
         </div>
     </div>

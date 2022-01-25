@@ -34,15 +34,33 @@ export class FriendPanelComponent implements OnInit {
         this.friendshipsService.deleteFriendship(currentUserEmail, this.friend.user_email)
             .subscribe({
                 error: err => {
-                    console.log('Error unfollowing user: ' + err);
+
+                    if (this.session === null || this.friend.user_email === undefined) return;
+
+                    this.friendshipsService.deleteFriendship(this.friend.user_email, currentUserEmail)
+                        .subscribe({
+                            error: err => {
+                                console.log('Error unfollowing user: ' + err);
+                                const modalRef = this.modalService.open(InfoModalComponent);
+                                modalRef.componentInstance.title = 'Error';
+                                modalRef.componentInstance.body = "Unable to remove friend " + this.friend.username + ".";
+                            },
+                            complete: () => {
+                                const modalRef = this.modalService.open(InfoModalComponent);
+                                modalRef.componentInstance.title = 'Friend Removed';
+                                modalRef.componentInstance.body = "You're no longer friend of " + this.friend.username + ".";
+                                this.dataChanged.emit();
+                            }
+                        });
+
                 },
                 complete: () => {
                     const modalRef = this.modalService.open(InfoModalComponent);
-                    modalRef.componentInstance.title = 'User Unfollowed';
-                    modalRef.componentInstance.body = "You've successfully unfollowed " + this.friend.username + ".";
+                    modalRef.componentInstance.title = 'Friend Removed';
+                    modalRef.componentInstance.body = "You're no longer friend of " + this.friend.username + ".";
                     this.dataChanged.emit();
                 }
-            })
+            });
 
     }
 

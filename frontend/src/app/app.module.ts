@@ -8,7 +8,7 @@ import { PostDetailsComponent } from './post-details/post-details.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { FriendsComponent } from './friends/friends.component';
-import { ProfileComponent } from './profile/profile.component';
+import { ProfileRootComponent } from './profile/profile-root/profile-root.component';
 import { MessagesComponent } from './messages/messages.component';
 import {ModalModule} from "ngx-bootstrap/modal";
 import { DeleteModalComponent } from './delete-modal/delete-modal.component';
@@ -20,13 +20,14 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { FeedPostComponent } from './feed-post/feed-post.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FriendPanelComponent } from './friend-panel/friend-panel.component';
-import { ProfilePostComponent } from './profile-post/profile-post.component';
+import { ProfilePostComponent } from './profile/profile-post/profile-post.component';
 import { CreatePostModalComponent } from './create-post-modal/create-post-modal.component';
 import { InfoModalComponent } from './info-modal/info-modal.component';
 import { CommentPanelComponent } from './comment-panel/comment-panel.component';
 import { MessagesUserPanelComponent } from './messages-user-panel/messages-user-panel.component';
 import { SearchUsersComponent } from './search-users/search-users.component';
 import { SearchPostsComponent } from './search-posts/search-posts.component';
+import { ProfilePostsComponent } from './profile/profile-posts/profile-posts.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { SearchPostsComponent } from './search-posts/search-posts.component';
     RegisterComponent,
     LoginComponent,
     FriendsComponent,
-    ProfileComponent,
+    ProfileRootComponent,
     MessagesComponent,
     DeleteModalComponent,
     CommentModalComponent,
@@ -52,6 +53,7 @@ import { SearchPostsComponent } from './search-posts/search-posts.component';
     InfoModalComponent,
     CommentPanelComponent,
     MessagesUserPanelComponent,
+    ProfilePostsComponent,
   ],
   imports: [
     BrowserModule,

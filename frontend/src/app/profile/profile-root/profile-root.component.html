@@ -7,7 +7,7 @@
             <img *ngIf="userProfile.image !== '' && userProfile.image !== null"
                  src="./assets/media/{{ userProfile.image }}" style="width: 10vw; height: 9vw; object-fit: cover" class="rounded-circle">
             <img *ngIf="userProfile.image === '' || userProfile.image === null"
-                 src='./assets/images/user2.png' style="width: 10vw; height: 9vw; object-fit: cover" class="rounded-circle">
+                 src='../../../assets/images/user2.png' style="width: 10vw; height: 9vw; object-fit: cover" class="rounded-circle">
 
             <h2 class="cover-heading pt-2">{{ userProfile.username | uppercase }}</h2>
             <p class="text-secondary cover-heading mb-5">{{ userProfile.user_email }}</p>
@@ -28,18 +28,7 @@
 
         </div>
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3">
-
-            <div *ngFor="let post of posts;">
-
-                <ProfilePost (dataChanged)="refreshData()" [post]="post" [userProfile]="userProfile"></ProfilePost>
-
-                <!--<app-delete-modal #deleteModal [post]="post"></app-delete-modal>-->
-                <!--<app-comment-modal #commentModal [post]="post" [user_profile]="user_profile"></app-comment-modal>-->
-
-            </div>
-
-        </div>
+        <ProfilePosts [userEmail]="userEmail" [numOfPosts]="changesCounter"></ProfilePosts>
 
     </div>
 

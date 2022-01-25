@@ -33,7 +33,7 @@ export class NavbarComponent implements OnInit {
 
         this.usersService.getUser(userEmail)
             .subscribe({
-                error: err => console.log('Error obtaining user by email in profile: ' + err.toString()),
+                error: err => console.log('Error obtaining user by email in profile-root: ' + err.toString()),
                 next: user => this.userProfile = user
             });
     }

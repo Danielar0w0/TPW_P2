@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Post} from "../utils/post";
-import {Session} from "../utils/session";
-import {User} from "../utils/user";
-import {PostsService} from "../services/posts/posts.service";
+import {Post} from "../../utils/post";
+import {Session} from "../../utils/session";
+import {User} from "../../utils/user";
+import {PostsService} from "../../services/posts/posts.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {InfoModalComponent} from "../info-modal/info-modal.component";
-import {CommentModalComponent} from "../comment-modal/comment-modal.component";
+import {InfoModalComponent} from "../../info-modal/info-modal.component";
+import {CommentModalComponent} from "../../comment-modal/comment-modal.component";
 
 @Component({
     selector: 'ProfilePost',
@@ -15,11 +15,12 @@ import {CommentModalComponent} from "../comment-modal/comment-modal.component";
 export class ProfilePostComponent implements OnInit {
 
     @Input() post!: Post;
-    @Input() userProfile!: User;
+    @Input() userEmail: string;
     @Output() dataChanged = new EventEmitter<void>();
     session: Session | null;
 
     constructor(private postsService: PostsService, private modalService: NgbModal) {
+        this.userEmail = '';
         this.session = Session.getCurrentSession();
     }
 

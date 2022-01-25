@@ -5,7 +5,7 @@ import {PostDetailsComponent} from "./post-details/post-details.component";
 import {RegisterComponent} from "./register/register.component";
 import {LoginComponent} from "./login/login.component";
 import {FriendsComponent} from "./friends/friends.component";
-import {ProfileComponent} from "./profile/profile.component";
+import {ProfileRootComponent} from "./profile/profile-root/profile-root.component";
 import {MessagesComponent} from "./messages/messages.component";
 import {EditProfileComponent} from "./edit-profile/edit-profile.component";
 import {MessagesWithComponent} from "./messages-with/messages-with.component";
@@ -20,9 +20,9 @@ const routes: Route[] = [
     {path: 'feed', component: FeedComponent},
     {path: 'post_details/:id', component: PostDetailsComponent},
     {path: 'friends', component: FriendsComponent},
-    {path: 'profile', component: ProfileComponent},
+    {path: 'profile', component: ProfileRootComponent},
     {path: 'profile/edit', component: EditProfileComponent},
-    {path: 'profile/:email', component: ProfileComponent},
+    {path: 'profile/:email', component: ProfileRootComponent},
     {path: 'messages', component: MessagesComponent},
     {path: 'messages/:email', component: MessagesWithComponent},
     {path: 'search/3/:query', component: SearchPostsComponent},
