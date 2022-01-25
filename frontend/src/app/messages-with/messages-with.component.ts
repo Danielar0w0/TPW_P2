@@ -52,19 +52,11 @@ export class MessagesWithComponent implements OnInit {
                 .subscribe({
                     error: err => console.error("Error getting messages: " + err.toString()),
                     next: messages => {
-                        messages.sort(function (m1, m2) { return m1.id - m2.id }).forEach(message => this.messages.push(message))
+                        messages.sort(function (m1, m2) { return m1.id - m2.id })
+                            .filter(message => message.receiver === this.other_user.user_email || message.sender === this.other_user.user_email)
+                            .forEach(message => this.messages.push(message))
                     }
                 });
-
-            /*
-            this.messagesService.getMessagesFromUser(receiverEmail, this.session.email)
-                .subscribe({
-                    error: err => console.error("Error getting messages: " + err.toString()),
-                    next: messages => {
-                        messages.forEach(message => this.messages.push(message))
-                    }
-                });
-             */
         });
     }
 
