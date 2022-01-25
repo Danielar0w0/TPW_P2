@@ -15,10 +15,10 @@
     <div class="container">
         <div class="row mx-4">
             <p class="fw-bolder p-0 mb-2 mx-0">Upload File</p>
-            <input type="file" id="file" (change)="handleFileInput($event)">
-            <input class="p-1" type="text" name="comment_content" [(ngModel)]="postDescription">
-            <div class="offset-8 mt-3 mb-4">
-                <button class="btn btn-primary"  (click)="submitPost()">Save Comment</button>
+            <input class="form-control my-4" type="file" id="file" (change)="handleFileInput($event)">
+            <input class="form-control p-1" type="text" name="description" [(ngModel)]="postDescription">
+            <div class="offset-8 mt-3 mb-5">
+                <button class="btn btn-primary"  (click)="submitPost()">Create Post</button>
             </div>
         </div>
         <p class="fs-6 fw-light text-center p-0"></p>

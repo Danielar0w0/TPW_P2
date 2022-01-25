@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {PostsService} from "../services/posts/posts.service";
 import {Session} from "../utils/session";
@@ -37,8 +37,6 @@ export class CreatePostModalComponent implements OnInit {
 
         if (this.session === undefined || this.session === null || this.postDescription === undefined || this.file === undefined || this.file === null)
             return;
-
-
 
         this.postsService.createPost(this.session.email, this.postDescription, this.file)
             .subscribe({
