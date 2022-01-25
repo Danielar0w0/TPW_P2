@@ -342,7 +342,7 @@ class FriendshipsView(APIView):
 
         app_auth = AppAuthorizer(request)
 
-        if not app_auth.is_authorized(current_user_email):
+        if not app_auth.is_authorized(current_user_email) or not app_auth.is_authorized(other_user_email):
             return app_auth.unauthorized_response()
 
         if current_user_email == other_user_email:
@@ -357,8 +357,9 @@ class FriendshipsView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
 
         try:
-            friendship_entities = Friendship.objects.filter(first_user__user_email=current_user_email,
-                                                            second_user__user_email=other_user_email)
+            friendship_entities = Friendship.objects.filter(Q(first_user__user_email=current_user_email,
+                                                            second_user__user_email=other_user_email) | Q(first_user__user_email=other_user_email,
+                                                            second_user__user_email=current_user_email))
         except Friendship.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
