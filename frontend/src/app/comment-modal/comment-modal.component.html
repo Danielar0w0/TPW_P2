@@ -15,7 +15,7 @@
     <div class="container">
         <div [hidden]="submitted" class="row mx-4">
             <p class="fw-bolder p-0 mb-2 mx-0">Add your comment</p>
-            <input class="p-1" type="text" name="comment_content" [(ngModel)]="comment_content">
+            <input class="p-1 form-control" type="text" name="comment_content" [(ngModel)]="comment_content">
             <div class="offset-8 mt-3 mb-4">
                 <button class="btn btn-primary" (click)="submitComment()" [hidden]="submitted">Save Comment</button>
             </div>

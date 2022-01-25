@@ -41,7 +41,7 @@ export class CreatePostModalComponent implements OnInit {
         this.postsService.createPost(this.session.email, this.postDescription, this.file)
             .subscribe({
                 error: err => {
-                    console.log('Error crating post: ' + err.toString())
+                    console.log('Error creating post: ' + err.toString())
                     const infoModal = this.modalService.open(InfoModalComponent);
                     infoModal.componentInstance.title = 'Posts';
                     infoModal.componentInstance.body = 'Error creating post.';
