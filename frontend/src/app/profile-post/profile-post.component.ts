@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Post} from "../utils/post";
 import {Session} from "../utils/session";
 import {User} from "../utils/user";
@@ -16,6 +16,7 @@ export class ProfilePostComponent implements OnInit {
 
     @Input() post!: Post;
     @Input() userProfile!: User;
+    @Output() dataChanged = new EventEmitter<void>();
     session: Session | null;
 
     constructor(private postsService: PostsService, private modalService: NgbModal) {
@@ -39,6 +40,7 @@ export class ProfilePostComponent implements OnInit {
                     const infoModal = this.modalService.open(InfoModalComponent);
                     infoModal.componentInstance.title = 'Post Deleted';
                     infoModal.componentInstance.body = 'Your post was deleted.'
+                    this.dataChanged.emit();
                 }
             })
 

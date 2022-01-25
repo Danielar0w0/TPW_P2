@@ -7,17 +7,20 @@
                  class="rounded-circle" onerror="this.onerror=null; this.src='./assets/images/user2.png'">
             <h2 class="cover-heading pt-2">{{ userProfile.username | uppercase }}</h2>
             <p class="text-secondary cover-heading mb-5">{{ userProfile.user_email }}</p>
-            <p class="lead">{{ friendsCount }} Friends</p>
+            <p class="lead">{{ friends.length }} Friends</p>
 
             <!-- TODO: If user is authenticated -->
-            <p class="lead" *ngIf="session !== null && userProfile.user_email === session.email">
+            <p class="lead" *ngIf="session !== null && userEmail === session.email">
                 <button class="btn btn-lg btn-primary mx-2" (click)="handlePostCreation()">Create post</button>
                 <a href="/profile/edit/" class="btn btn-lg btn-outline-primary mx-2">Edit profile</a>
             </p>
 
-            <p class="lead" *ngIf="session !== null && userProfile.user_email !== session.email">
-                <!-- TODO: Add Unfollow action -->
-                <!--<a class="btn btn-lg btn-primary">Unfollow</a>-->
+            <p class="lead" *ngIf="session !== null && userEmail !== session.email && !friends.includes(userEmail)">
+                <button class="btn btn-lg btn-primary" (click)="addFriend()">Add Friend</button>
+            </p>
+
+            <p class="lead" *ngIf="session !== null && userEmail !== session.email && friends.includes(userEmail)">
+                <button class="btn btn-lg btn-primary" (click)="removeFriend()">Remove Friend</button>
             </p>
 
         </div>
@@ -26,7 +29,7 @@
 
             <div *ngFor="let post of posts;">
 
-                <ProfilePost [post]="post" [userProfile]="userProfile"></ProfilePost>
+                <ProfilePost (dataChanged)="refreshData()" [post]="post" [userProfile]="userProfile"></ProfilePost>
 
                 <!--<app-delete-modal #deleteModal [post]="post"></app-delete-modal>-->
                 <!--<app-comment-modal #commentModal [post]="post" [user_profile]="user_profile"></app-comment-modal>-->
