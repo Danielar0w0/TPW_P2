@@ -30,5 +30,4 @@ export class SearchService {
 
         return this.httpClient.post(uri, httpOptions);
     }
-
 }

@@ -20,7 +20,6 @@ import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { FeedPostComponent } from './feed-post/feed-post.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {FormsModule} from "@angular/forms";
 import { FriendPanelComponent } from './friend-panel/friend-panel.component';
 import { ProfilePostComponent } from './profile-post/profile-post.component';
 import { CreatePostModalComponent } from './create-post-modal/create-post-modal.component';
