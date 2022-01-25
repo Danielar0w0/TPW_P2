@@ -163,10 +163,6 @@ class PostsView(APIView):
     @staticmethod
     def delete(request):
 
-        if not request.user.is_staff:
-            return JsonResponse({"message": "You do not have permission to perform this action."},
-                                status=status.HTTP_403_FORBIDDEN)
-
         if 'id' not in request.data:
             return JsonResponse({"message": "Invalid body request."}, status=status.HTTP_400_BAD_REQUEST)
 
