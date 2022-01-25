@@ -73,6 +73,8 @@ export class MessagesWithComponent implements OnInit {
                     const modalRef = this.modalService.open(InfoModalComponent);
                     modalRef.componentInstance.title = 'Message Sent';
                     modalRef.componentInstance.body = "You've successfully sent a message to " + this.other_user.username + ".";
+                    this.messages = [];
+                    this.ngOnInit();
                 }
             })
 

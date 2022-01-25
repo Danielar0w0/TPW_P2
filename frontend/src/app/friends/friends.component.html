@@ -1,18 +1,8 @@
 <div class="py-5">
 
-    <div class="container">
+  <div class="container">
 
-        <h2 class="fw-bolder mb-4">Following</h2>
-
-        <!--
-      <div class="container-fluid py-5">
-        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="px-4 input-group w-auto">
-          <input type="search" name="query_friend" class="form-control rounded" formControlName="query_friend"
-                 placeholder="Search for who you're following..." aria-label="Search"/>
-          <input type="submit" class="btn btn-primary" value="Search"/>
-        </form>
-      </div>
-      -->
+        <h2 class="fw-bolder">Friends</h2>
 
         <div *ngIf="friends.length > 0; then showFriends else noFriends"></div>
 

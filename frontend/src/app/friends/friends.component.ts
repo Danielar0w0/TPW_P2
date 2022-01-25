@@ -49,4 +49,9 @@ export class FriendsComponent implements OnInit {
 
     }
 
+    refreshData() {
+        this.friends = [];
+        this.ngOnInit();
+    }
+
 }
