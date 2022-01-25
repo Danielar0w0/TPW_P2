@@ -31,15 +31,31 @@ export class FriendsComponent implements OnInit {
 
                     friendships.forEach(friendship => {
 
-                        this.usersService.getUser(friendship.second_user)
-                            .subscribe({
-                                error: err => {
-                                    console.log("Error obtaining user by friendship: " + err);
-                                },
-                                next: user => {
-                                    this.friends.push(user);
-                                }
-                            })
+                        if (friendship.second_user !== this.session?.email) {
+
+                            this.usersService.getUser(friendship.second_user)
+                                .subscribe({
+                                    error: err => {
+                                        console.log("Error obtaining user by friendship: " + err);
+                                    },
+                                    next: user => {
+                                        this.friends.push(user);
+                                    }
+                                });
+
+                        } else {
+
+                            this.usersService.getUser(friendship.first_user)
+                                .subscribe({
+                                    error: err => {
+                                        console.log("Error obtaining user by friendship: " + err);
+                                    },
+                                    next: user => {
+                                        this.friends.push(user);
+                                    }
+                                });
+
+                        }
 
                     });
 
