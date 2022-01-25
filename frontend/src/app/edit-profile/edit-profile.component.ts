@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {UsersService} from "../services/users/users.service";
 import {Session} from "../utils/session";
 import {FormBuilder} from "@angular/forms";
-// import {InfoModalComponent} from "../info-modal/info-modal.component";
-// import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-// import {CreatePostModalComponent} from "../create-post-modal/create-post-modal.component";
+import {InfoModalComponent} from "../info-modal/info-modal.component";
+import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {CreatePostModalComponent} from "../create-post-modal/create-post-modal.component";
 
 @Component({
     selector: 'app-edit-profile-root',
@@ -22,19 +22,17 @@ export class EditProfileComponent implements OnInit {
         file: ''
     });
 
-    constructor(private usersService: UsersService, private formBuilder: FormBuilder) {
+    constructor(private usersService: UsersService, private formBuilder: FormBuilder, private modalService: NgbModal) {
         this.session = Session.getCurrentSession();
         this.changesCounter = 0;
     }
 
-    /*
     handlePostCreation() {
         const modalReference = this.modalService.open(CreatePostModalComponent);
         modalReference.result.then(() => {
             this.changesCounter++;
         });
     }
-     */
 
     updatePreview() {
         this.image_preview.src = URL.createObjectURL(this.image.files[0]);
@@ -44,12 +42,6 @@ export class EditProfileComponent implements OnInit {
         this.image = document.getElementById("image");
         this.image_preview = document.getElementById("image-preview")
     }
-
-    /*
-    closeModal(): void {
-        this.modal.close();
-    }
-     */
 
     updateProfilePic() {
 
@@ -65,23 +57,15 @@ export class EditProfileComponent implements OnInit {
 
         this.usersService.updateProfilePic(this.session.email, file).subscribe({
             error: err => {
-                console.log('Error updating profile picture: ' + err.toString())
-                /*
                 const infoModal = this.modalService.open(InfoModalComponent);
                 infoModal.componentInstance.title = 'Profile Picture';
                 infoModal.componentInstance.body = 'Error updating profile picture.';
-                 */
-                window.alert('Error updating profile picture.');
             },
             complete: () => {
-                /*
                 const infoModal = this.modalService.open(InfoModalComponent);
                 infoModal.componentInstance.title = 'Profile Picture';
                 infoModal.componentInstance.body = 'Successfully updated profile picture';
-                 */
-                window.alert('Successfully updated profile picture');
             }
         })
-            // .add(() => this.closeModal())
     }
 }

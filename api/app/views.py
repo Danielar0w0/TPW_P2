@@ -532,8 +532,12 @@ class PictureQueryView(APIView):
     @staticmethod
     def patch(request, user_email=None):
 
-        if not user_email or 'image' not in request.data:
+        if not user_email or 'image' not in request.data or 'email' not in request.data:
             return JsonResponse({'message': 'Invalid body request'}, status=status.HTTP_400_BAD_REQUEST)
+
+        email = request.data['email']
+        if email != user_email:
+            return JsonResponse({'message': 'Unauthorized user'}, status=status.HTTP_401_UNAUTHORIZED)
 
         file = request.data['image']
         try:
