@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/user/<str:user_email>/posts', views.PostsView.as_view(), name='api_posts_by_user'),
     path('api/user/<str:user_email>/friendships', views.FriendshipsView.as_view(), name='api_friendships_by_user'),
     path('api/user/<str:user_email>/messages', views.MessagesQueryView.as_view(), name='api_user_messages'),
+    path('api/user/<str:user_email>/picture', views.PictureQueryView.as_view(), name='api_user_picture'),
     path('api/user/<str:user_email>', views.UserView.as_view(), name='api_user'),
     path('api/posts', views.PostsView.as_view(), name='api_posts'),
     path('api/posts/<int:post_id>/comments', views.PostCommentsView.as_view(), name='api_post_comments'),

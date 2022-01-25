@@ -51,10 +51,8 @@ export class UsersService {
         const uri = this.baseUrl + `/api/user/${email}/picture`;
 
         const formData: FormData = new FormData();
-        formData.append('email', email);
-        formData.append('file', file, file.name);
+        formData.append('file', file);
 
-        return this.httpClient.post<ResponseMessage>(uri, formData, {observe: 'response', headers: new HttpHeaders({'Authorization': 'Bearer ' + Session.getCurrentSession()?.token})});
-
+        return this.httpClient.patch<ResponseMessage>(uri, formData, {observe: 'response', headers: new HttpHeaders({'Authorization': 'Bearer ' + Session.getCurrentSession()?.token})});
     }
 }

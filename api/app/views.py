@@ -524,3 +524,40 @@ class SearchQueryView(APIView):
 
         else:
             return JsonResponse({"message": "Unknown query type."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PictureQueryView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @staticmethod
+    def patch(request, user_email=None):
+
+        if not user_email or 'image' not in request.data:
+            return JsonResponse({'message': 'Invalid body request'}, status=status.HTTP_400_BAD_REQUEST)
+
+        file = request.data['image']
+        try:
+
+            app_user = AppUser.objects.get(user_email=user_email)
+            serializer = UserSerializer(app_user, data=request.data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                try:
+                    django_user = User.objects.get(email=user_email)
+                    django_user.file = file
+                    django_user.save()
+
+                except AppUser.DoesNotExist:
+                    return JsonResponse({'message': 'Invalid user.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+                app_user.file = file
+                app_user.save()
+
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return JsonResponse({'message': 'Invalid body request'}, status=status.HTTP_400_BAD_REQUEST)
+
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'Invalid user.'}, status=status.HTTP_401_UNAUTHORIZED)
