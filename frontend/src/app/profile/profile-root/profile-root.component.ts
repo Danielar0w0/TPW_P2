@@ -1,35 +1,35 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {User} from "../utils/user";
-import {Post} from "../utils/post";
-import {Session} from "../utils/session";
+import {User} from "../../utils/user";
+import {Post} from "../../utils/post";
+import {Session} from "../../utils/session";
 import {ActivatedRoute} from "@angular/router";
-import {UsersService} from "../services/users/users.service";
-import {environment} from "../../environments/environment";
+import {UsersService} from "../../services/users/users.service";
+import {environment} from "../../../environments/environment";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {CreatePostModalComponent} from "../create-post-modal/create-post-modal.component";
-import {Friendship} from "../utils/friendship";
-import {FriendshipsService} from "../services/friendships/friendships.service";
-import {InfoModalComponent} from "../info-modal/info-modal.component";
+import {CreatePostModalComponent} from "../../create-post-modal/create-post-modal.component";
+import {Friendship} from "../../utils/friendship";
+import {FriendshipsService} from "../../services/friendships/friendships.service";
+import {InfoModalComponent} from "../../info-modal/info-modal.component";
 
 @Component({
-    selector: 'app-profile',
-    templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.css']
+    selector: 'app-profile-root',
+    templateUrl: './profile-root.component.html',
+    styleUrls: ['./profile-root.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileRootComponent implements OnInit {
 
     userEmail: string;
     userProfile!: User;
     session!: Session | null
     friends: string[];
-    posts: Post[];
+    changesCounter: number;
 
     constructor(private route: ActivatedRoute, private usersService: UsersService, private modalService: NgbModal, private friendshipService: FriendshipsService) {
         this.userEmail = '';
+        this.changesCounter = 0;
         this.userProfile = User.getNullUser();
         this.session = Session.getCurrentSession();
         this.friends = [];
-        this.posts = [];
     }
 
     ngOnInit(): void {
@@ -45,13 +45,13 @@ export class ProfileComponent implements OnInit {
 
             this.usersService.getUser(this.userEmail)
                 .subscribe({
-                    error: err => console.log('Error obtaining user by email in profile: ' + err.toString()),
+                    error: err => console.log('Error obtaining user by email in profile-root: ' + err.toString()),
                     next: user => this.userProfile = user
                 });
 
             this.usersService.getUserFriendships(this.userEmail)
                 .subscribe({
-                    error: err => console.log('Error obtaining user friendships in profile: ' + err.toString()),
+                    error: err => console.log('Error obtaining user friendships in profile-root: ' + err.toString()),
                     next: friendships => {
                         friendships.forEach(friendship => {
                             if (friendship.first_user === this.session?.email)
@@ -63,26 +63,14 @@ export class ProfileComponent implements OnInit {
                     }
                 });
 
-            this.usersService.getUserPosts(this.userEmail)
-                .subscribe({
-                    error: err => console.log('Error obtaining user posts in profile: ' + err.toString()),
-                    next: posts => {
-                        posts.forEach(post => {
-                            if (post.file !== null)
-                                post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
-                            this.posts.push(post);
-                        });
-                    }
-                });
-
         });
 
     }
 
     handlePostCreation() {
         const modalReference = this.modalService.open(CreatePostModalComponent);
-        modalReference.result.then(value => {
-           this.refreshData();
+        modalReference.result.then(() => {
+           this.changesCounter++;
         });
     }
 
@@ -126,7 +114,6 @@ export class ProfileComponent implements OnInit {
         this.userProfile = User.getNullUser();
         this.session = Session.getCurrentSession();
         this.friends = [];
-        this.posts = [];
 
         this.ngOnInit();
 
