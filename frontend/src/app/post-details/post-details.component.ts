@@ -15,7 +15,7 @@ import {UsersService} from "../services/users/users.service";
 })
 export class PostDetailsComponent implements OnInit {
 
-    @Input() post!: Post;
+    post!: Post;
     postOwner: User;
     comments: Comment[];
 
@@ -35,9 +35,17 @@ export class PostDetailsComponent implements OnInit {
                 .subscribe({
                     error: err => console.log('Error getting post by id: ' + err.toString()),
                     next: post => {
+
                         if (post.file !== null)
                             post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
                         this.post = post;
+
+                        this.usersService.getUser(this.post.user)
+                            .subscribe({
+                                error: err => console.log('Error getting user in post-details: ' + err.toString()),
+                                next: user => this.postOwner = user
+                            });
+
                     }
                 });
 

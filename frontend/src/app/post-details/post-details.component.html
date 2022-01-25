@@ -12,12 +12,12 @@
 
                 <div class="row mt-5 text-light">
                     <div class="col-4">
-                        <img src="./assets/media/{{ post.user.image }}"
-                             onerror="this.onerror=null;this.src='/static/imgs/user2.png';" class="rounded-circle"
-                             style="object-fit: contain; max-height: 50px; max-width: 50px;">
+                        <img src="{{ postOwner.image }}"
+                             style="object-fit: scale-down; max-height: 50px; max-width: 50px;"
+                             onerror="this.onerror=null; this.src='../../assets/images/user2.png'">
                     </div>
                     <div class="col-7">
-                        <p class="fw-bold" style="font-size: 1.2rem">{{ post.user.username }}</p>
+                        <p class="fw-bold" style="font-size: 1.2rem">{{ postOwner.username }}</p>
                     </div>
                 </div>
 

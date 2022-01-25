@@ -17,15 +17,13 @@ export class ProfileComponent implements OnInit {
 
     userProfile!: User;
     session!: Session | null;
-    followers: number;
-    following: number;
+    friendsCount: number;
     posts: Post[];
 
     constructor(private route: ActivatedRoute, private usersService: UsersService, public modalService: NgbModal) {
         this.userProfile = User.getNullUser();
         this.session = Session.getCurrentSession();
-        this.followers = 0;
-        this.following = 0;
+        this.friendsCount = 0;
         this.posts = [];
     }
 
@@ -49,7 +47,7 @@ export class ProfileComponent implements OnInit {
             this.usersService.getUserFriendships(userEmail)
                 .subscribe({
                     error: err => console.log('Error obtaining user friendships in profile: ' + err.toString()),
-                    next: followers => this.following = followers.length
+                    next: friendships => this.friendsCount += friendships.length
                 });
 
             this.usersService.getUserPosts(userEmail)
