@@ -46,7 +46,12 @@ export class ProfileRootComponent implements OnInit {
             this.usersService.getUser(this.userEmail)
                 .subscribe({
                     error: err => console.log('Error obtaining user by email in profile-root: ' + err.toString()),
-                    next: user => this.userProfile = user
+                    next: user => this.userProfile = user,
+                    complete: () => {
+                        if (this.userProfile.image)
+                            this.userProfile.image = environment.apiURL + this.userProfile.image.replace("/BubbleAPI", "");
+
+                    }
                 });
 
             this.usersService.getUserFriendships(this.userEmail)

@@ -12,40 +12,37 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class EditProfileComponent implements OnInit {
 
-    image: any;
+    image?: File | null;
     image_preview: any;
     session!: Session | null;
-
-    pictureForm = this.formBuilder.group({
-        file: ''
-    });
 
     constructor(private usersService: UsersService, private formBuilder: FormBuilder, private modalService: NgbModal) {
         this.session = Session.getCurrentSession();
     }
 
+    handleFileInput(event: Event): void {
+        const target = event.target as HTMLInputElement;
+        const files = target.files as FileList;
+        if (!files) return;
+        this.image = files.item(0);
+        this.updatePreview();
+    }
+
     updatePreview() {
-        this.image_preview.src = URL.createObjectURL(this.image.files[0]);
+        if (this.image)
+            this.image_preview.src = URL.createObjectURL(this.image);
     }
 
     ngOnInit(): void {
-        this.image = document.getElementById("image");
         this.image_preview = document.getElementById("image-preview")
     }
 
     updateProfilePic() {
 
-        if (this.session === null || this.pictureForm.get('file') === null)
+        if (this.session === null || !this.image)
             return;
 
-        // @ts-ignore
-        if (this.pictureForm.get('file').value === null)
-            return;
-
-        // @ts-ignore
-        let file = this.pictureForm.get('file').value
-
-        this.usersService.updateProfilePic(this.session.email, file).subscribe({
+        this.usersService.updateProfilePic(this.session.email, this.image).subscribe({
             error: () => {
                 const infoModal = this.modalService.open(InfoModalComponent);
                 infoModal.componentInstance.title = 'Profile Picture';
