@@ -4,8 +4,8 @@ export class Message {
 
   constructor(
     public id: number,
-    public sender: User,
-    public receiver: User,
+    public sender: string,
+    public receiver: string,
     public content: string,
   ) { }
 

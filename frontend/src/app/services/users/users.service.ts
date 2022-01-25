@@ -6,14 +6,13 @@ import {User} from "../../utils/user";
 import {Friendship} from "../../utils/friendship";
 import {Message} from "../../utils/message";
 import {Post} from "../../utils/post";
+import {Session} from "../../utils/session";
 
-// TODO: Change by user token.
-let token = '2e76d025d33ec5bc2fd2e1e0fb1e1008ad9bd0e4';
 
 const httpOptions = {
     headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        'Authorization': 'Bearer ' + Session.getCurrentSession()?.token
     })
 }
 

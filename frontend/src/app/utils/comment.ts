@@ -5,8 +5,8 @@ export class Comment {
 
   constructor(
     public comment_id: number,
-    public user: User,
-    public post: Post,
+    public user: string,
+    public post: number,
     public content: string,
   ) {}
 

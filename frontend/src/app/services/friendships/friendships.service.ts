@@ -5,14 +5,12 @@ import {Observable} from "rxjs";
 import {ResponseMessage} from "../../utils/response_message";
 import {Friendship} from "../../utils/friendship";
 import {QueryType} from "../../utils/query_type";
-
-// TODO: Change by user token.
-let token = 'f359f28a56de55d192bc1a46b5d4733cf1d24531';
+import {Session} from "../../utils/session";
 
 const httpOptions = {
     headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        'Authorization': 'Bearer ' + Session.getCurrentSession()?.token
     })
 }
 
@@ -30,14 +28,14 @@ export class FriendshipsService {
         return this.httpClient.post<ResponseMessage>(uri, {
             'current_user': current_user,
             'other_user': other_user
-        }, {observe: 'response'});
+        }, {observe: 'response', headers: httpOptions.headers});
     }
 
     deleteFriendship(current_user: string, other_user: string): Observable<any> {
         const uri = this.baseUrl + `/api/friendships`;
 
         const options = {
-            headers: new HttpHeaders({'Content-Type': 'application/json'}),
+            headers: httpOptions.headers,
             body: {
                 'current_user': current_user,
                 'other_user': other_user

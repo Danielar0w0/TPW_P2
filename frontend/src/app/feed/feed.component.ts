@@ -4,6 +4,8 @@ import {Post} from "../utils/post";
 import {PostsService} from "../services/posts/posts.service";
 import {FriendshipsService} from "../services/friendships/friendships.service";
 import {UsersService} from "../services/users/users.service";
+import {environment} from "../../environments/environment";
+import {Session} from "../utils/session";
 
 @Component({
     selector: 'app-feed',
@@ -13,24 +15,27 @@ import {UsersService} from "../services/users/users.service";
 export class FeedComponent implements OnInit {
 
     posts: Post[];
-    user!: User;
+    session!: Session | null;
 
     constructor(private postsService: PostsService, private friendshipsService: FriendshipsService, private usersService: UsersService) {
-        this.user = new User('hugogoncalves13@ua.pt', 'hugo', 'hugo', 'trending-design.png', false)
         this.posts = [];
+        this.session = Session.getCurrentSession();
     }
 
     ngOnInit(): void {
 
-        this.usersService.getUserFriendships(this.user.email).subscribe(friendships => {
+        if (this.session === null) return;
+
+        this.usersService.getUserFriendships(this.session.email).subscribe(friendships => {
 
             friendships.forEach(friendship => {
 
-                alert(friendship)
-
-                this.usersService.getUserPosts(friendship.second_user.email).subscribe(posts => {
-                    alert(posts)
-                    posts.forEach(post => this.posts.push(post));
+                this.usersService.getUserPosts(friendship.second_user).subscribe(posts => {
+                    posts.forEach(post => {
+                        if (post.file !== null)
+                            post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
+                        this.posts.push(post);
+                    });
                 });
 
             });

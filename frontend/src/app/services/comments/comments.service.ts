@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
 import {environment} from "../../../environments/environment";
-import {Observable} from "rxjs";
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {catchError, Observable, throwError} from "rxjs";
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {Session} from "../../utils/session";
+import {Comment} from "../../utils/comment";
 
 const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + Session.getCurrentSession()?.token
+  })
 }
 
 @Injectable({

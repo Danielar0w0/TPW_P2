@@ -1,32 +1,26 @@
-<div bsModal #commentModal="bs-modal" class="modal fade" id="commentsModal{{ post.post_id }}" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Comment</h5>
-        <button type="button" class="btn-close me-1" data-dismiss="modal"
-                aria-label="Close" (click)="hide()"></button>
-      </div>
+<div id="comment_modal">
 
-      <div class="modal-body">
+    <div class="row m-4" id="comment_modal_header">
 
-        <form action="/comment/" method="post"
-              class="form-horizontal justify-content-center">
+        <div class="col-11">
+            <h5 class="modal-title" id="exampleModalLongTitle">Comment</h5>
+        </div>
+        <div class="col-1">
+            <button type="button" class="btn-close me-1" data-dismiss="modal"
+                    aria-label="Close" (click)="closeModal()"></button>
+        </div>
 
-          <div class="row m-3">
-            <p class="fw-bolder p-0 mb-2">Add your comment</p>
-            <input text="text" id="comment">
-          </div>
-
-          <input type="hidden" name="post_id" value="{{ post.post_id }}">
-          <input type="hidden" name="redirect_uri" value="/profile">
-          <input type="hidden" name="user_email" value="{{ user_profile.email }}">
-
-          <div class="modal-footer">
-            <input type="submit" value="Save" class="btn btn-primary"/>
-          </div>
-        </form>
-      </div>
     </div>
-  </div>
+
+    <div class="container">
+        <div [hidden]="submitted" class="row mx-4">
+            <p class="fw-bolder p-0 mb-2 mx-0">Add your comment</p>
+            <input class="p-1" type="text" name="comment_content" [(ngModel)]="comment_content">
+            <div class="offset-8 mt-3 mb-4">
+                <button class="btn btn-primary" (click)="submitComment()" [hidden]="submitted">Save Comment</button>
+            </div>
+        </div>
+        <p class="fs-6 fw-light text-center p-0" [class.my-5] = "submitted" [innerHTML]="statusMessage"></p>
+    </div>
+
 </div>

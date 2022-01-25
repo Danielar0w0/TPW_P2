@@ -4,14 +4,12 @@ import {environment} from "../../../environments/environment";
 import {Observable} from "rxjs";
 import {Post} from "../../utils/post";
 import {ResponseMessage} from "../../utils/response_message";
-
-// TODO: Change by user token.
-let token = 'f359f28a56de55d192bc1a46b5d4733cf1d24531';
+import {Session} from "../../utils/session";
 
 const httpOptions = {
     headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
+        'Authorization': 'Bearer ' + Session.getCurrentSession()?.token
     })
 }
 
@@ -30,6 +28,11 @@ export class PostsService {
         return this.httpClient.get<Post[]>(uri, httpOptions);
     }
 
+    getPostById(postId: number): Observable<Post> {
+        const uri = this.baseUrl + `/api/posts`;
+        return this.httpClient.get<Post>(uri, {headers: httpOptions.headers, params: {'id': postId}});
+    }
+
     createPost(user: string, description: string, file: File): Observable<HttpResponse<ResponseMessage>> {
 
         const uri = this.baseUrl + `/api/posts`;
@@ -39,13 +42,21 @@ export class PostsService {
         formData.append('description', description);
         formData.append('file', file, file.name);
 
-        return this.httpClient.post<ResponseMessage>(uri, formData, {observe: 'response'});
+        return this.httpClient.post<ResponseMessage>(uri, formData, {observe: 'response', headers: new HttpHeaders({'Authorization': 'Bearer ' + Session.getCurrentSession()?.token})});
 
     }
 
-    deletePost(postId: number): Observable<HttpResponse<ResponseMessage>> {
+    deletePost(postId: number): Observable<any> {
         const uri = this.baseUrl + `/api/posts`;
-        return this.httpClient.post<ResponseMessage>(uri, {'id': postId}, {observe: 'response'});
+
+        const options = {
+            headers: httpOptions.headers,
+            body: {
+                'id': postId
+            }
+        };
+
+        return this.httpClient.delete<ResponseMessage>(uri, options);
     }
 
 }

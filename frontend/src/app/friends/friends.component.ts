@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../utils/user";
-import {FormBuilder} from '@angular/forms';
-import {Router} from "@angular/router";
-import {SearchService} from "../services/search/search.service";
+import {UsersService} from "../services/users/users.service";
+import {Session} from "../utils/session";
 
 @Component({
     selector: 'app-friends',
@@ -11,26 +10,42 @@ import {SearchService} from "../services/search/search.service";
 })
 export class FriendsComponent implements OnInit {
 
-    users: User[] = [];
-    searchForm = this.formBuilder.group({
-        query_friend: ''
-    });
+    session!: Session | null;
+    friends!: User[];
 
-    constructor(private searchService: SearchService, private router: Router, private formBuilder: FormBuilder,) {
+    constructor(private usersService: UsersService) {
+        this.session = Session.getCurrentSession();
+        this.friends = [];
     }
 
     ngOnInit(): void {
-    }
 
-    onSubmit() {
+        if (this.session === null) return;
 
-        // @ts-ignore
-        let query = this.loginForm.get("query_friend").value;
-        if (query === null)
-            return ;
+        this.usersService.getUserFriendships(this.session.email)
+            .subscribe({
+                error: err => {
+                    console.log("Error obtaining user's friends: " + err);
+                },
+                next: friendships => {
 
-        // this.searchService.performSearch(query).subscribe(
+                    friendships.forEach(friendship => {
 
+                        this.usersService.getUser(friendship.second_user)
+                            .subscribe({
+                                error: err => {
+                                    console.log("Error obtaining user by friendship: " + err);
+                                },
+                                next: user => {
+                                    this.friends.push(user);
+                                }
+                            })
+
+                    });
+
+                }
+
+            });
 
     }
 

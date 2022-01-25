@@ -4,8 +4,8 @@ export class Friendship {
 
   constructor(
     public id: number,
-    public first_user: User,
-    public second_user: User,
+    public first_user: string,
+    public second_user: string,
     ) {}
 
 }

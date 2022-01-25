@@ -6,9 +6,13 @@ import {Post} from "../../utils/post";
 import {ResponseMessage} from "../../utils/response_message";
 import {Friendship} from "../../utils/friendship";
 import {Message} from "../../utils/message";
+import {Session} from "../../utils/session";
 
 const httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
+    headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + Session.getCurrentSession()?.token
+    })
 }
 
 @Injectable({
@@ -21,7 +25,7 @@ export class MessagesService {
     constructor(private httpClient: HttpClient) {
     }
 
-    getMessagesFromUser(current_user_email: string, receiver_email: string): Observable<Message> {
+    getMessagesFromUser(current_user_email: string, receiver_email: string): Observable<Message[]> {
 
         const uri = this.baseUrl + `/api/messages`;
 
@@ -30,7 +34,7 @@ export class MessagesService {
             params: new HttpParams().set('current_user', current_user_email).set('receptor', receiver_email)
         };
 
-        return this.httpClient.get<Message>(uri, options);
+        return this.httpClient.get<Message[]>(uri, options);
 
     }
 

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -20,6 +19,14 @@ import { CreatePostComponent } from './create-post/create-post.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { FeedPostComponent } from './feed-post/feed-post.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {FormsModule} from "@angular/forms";
+import { FriendPanelComponent } from './friend-panel/friend-panel.component';
+import { ProfilePostComponent } from './profile-post/profile-post.component';
+import { CreatePostModalComponent } from './create-post-modal/create-post-modal.component';
+import { InfoModalComponent } from './info-modal/info-modal.component';
+import { CommentPanelComponent } from './comment-panel/comment-panel.component';
+import { MessagesUserPanelComponent } from './messages-user-panel/messages-user-panel.component';
 import { SearchUsersComponent } from './search-users/search-users.component';
 import { SearchPostsComponent } from './search-posts/search-posts.component';
 
@@ -42,15 +49,22 @@ import { SearchPostsComponent } from './search-posts/search-posts.component';
     FeedPostComponent,
     SearchUsersComponent,
     SearchPostsComponent,
+    FriendPanelComponent,
+    ProfilePostComponent,
+    CreatePostModalComponent,
+    InfoModalComponent,
+    CommentPanelComponent,
+    MessagesUserPanelComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        ModalModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        FormsModule,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    ModalModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgbModule,
+    FormsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
