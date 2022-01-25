@@ -342,7 +342,7 @@ class FriendshipsView(APIView):
 
         app_auth = AppAuthorizer(request)
 
-        if not app_auth.is_authorized(current_user_email) or not app_auth.is_authorized(other_user_email):
+        if not app_auth.is_authorized(current_user_email) and not app_auth.is_authorized(other_user_email):
             return app_auth.unauthorized_response()
 
         if current_user_email == other_user_email:
