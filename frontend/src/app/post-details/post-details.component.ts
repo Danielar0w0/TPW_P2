@@ -38,6 +38,7 @@ export class PostDetailsComponent implements OnInit {
                         if (post.file !== null)
                             post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
                         this.post = post;
+                        this.postOwner = post.user;
                     }
                 });
 
@@ -61,9 +62,6 @@ export class PostDetailsComponent implements OnInit {
                         this.comments = comments;
                     }
                 });
-
         });
-
     }
-
 }

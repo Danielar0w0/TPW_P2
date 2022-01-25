@@ -18,7 +18,7 @@ export class SearchService {
 
     performSearch(queryType: QueryType, query: string): Observable<any> {
 
-        const uri = this.baseUrl + `/api/search`;
+        const uri = this.baseUrl + '/api/search';
 
         let httpOptions = {
             headers: new HttpHeaders({
@@ -28,6 +28,6 @@ export class SearchService {
             params: {'query_type': QueryType[queryType], 'query': query}
         };
 
-        return this.httpClient.post(uri, httpOptions);
+        return this.httpClient.get(uri, httpOptions);
     }
 }

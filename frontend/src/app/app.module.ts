@@ -15,7 +15,6 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 import { CommentModalComponent } from './comment-modal/comment-modal.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { MessagesWithComponent } from './messages-with/messages-with.component';
-import { CreatePostComponent } from './create-post/create-post.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { FeedPostComponent } from './feed-post/feed-post.component';
@@ -44,7 +43,6 @@ import { SearchPostsComponent } from './search-posts/search-posts.component';
     CommentModalComponent,
     EditProfileComponent,
     MessagesWithComponent,
-    CreatePostComponent,
     FeedPostComponent,
     SearchUsersComponent,
     SearchPostsComponent,

@@ -52,23 +52,12 @@
                 <input type="submit" class="btn btn-primary" value="Search"/>
             </form>
 
-            <a class="d-flex align-items-center" href="/profile" id="navbarDropdownMenuLink" role="button"
-               aria-expanded="false">
-                <img src='./assets/images/user2.png' height="30px" class="rounded-circle"
-                     onerror="this.onerror=null; this.src='./assets/images/user2.png'"/>
+            <a class="d-flex align-items-center" href="/profile">
+                <img *ngIf="userProfile.image !== '' && userProfile.image !== null"
+                     src="./assets/media/{{ userProfile.image }}" height="30px" class="rounded-circle">
+                <img *ngIf="userProfile.image === '' || userProfile.image === null"
+                     src='./assets/images/user2.png' height="30px" class="rounded-circle">
             </a>
-
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                <li>
-                    <a class="dropdown-item" href="/profile/">My profile</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="#">Settings</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="/logout">Logout</a>
-                </li>
-            </ul>
         </div>
 
     </div>
