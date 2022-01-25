@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../services/auth/auth.service";
 import {Router} from "@angular/router";
 import {FormBuilder} from '@angular/forms';
+import {CreatePostModalComponent} from "../create-post-modal/create-post-modal.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {InfoModalComponent} from "../info-modal/info-modal.component";
 
 @Component({
     selector: 'app-login',
@@ -10,7 +13,7 @@ import {FormBuilder} from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-    constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder,) {
+    constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder, private modalService: NgbModal) {
     }
 
     ngOnInit(): void {
@@ -36,7 +39,9 @@ export class LoginComponent implements OnInit {
 
                     localStorage.setItem('user', JSON.stringify(session));
 
-                    window.alert("Login successful!");
+                    const modalReference = this.modalService.open(InfoModalComponent);
+                    modalReference.componentInstance.title = 'Successful Log-in'
+                    modalReference.componentInstance.body = "You've successfully logged in into your account."
 
                     setTimeout(() => {
                         window.location.replace("");
@@ -44,7 +49,9 @@ export class LoginComponent implements OnInit {
 
                 },
                 error: err => {
-                    window.alert(err.message);
+                    const modalReference = this.modalService.open(InfoModalComponent);
+                    modalReference.componentInstance.title = 'Error'
+                    modalReference.componentInstance.body = 'Unable to log-in into your account.'
                 },
             }
         );

@@ -30,13 +30,29 @@ export class FeedComponent implements OnInit {
 
             friendships.forEach(friendship => {
 
-                this.usersService.getUserPosts(friendship.second_user).subscribe(posts => {
-                    posts.forEach(post => {
-                        if (post.file !== null)
-                            post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
-                        this.posts.push(post);
+                if (friendship.second_user !== this.session?.email) {
+
+                    this.usersService.getUserPosts(friendship.second_user).subscribe(posts => {
+                        posts.forEach(post => {
+                            if (post.file !== null)
+                                post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
+                            this.posts.push(post);
+                        });
                     });
-                });
+
+                } else {
+
+                    this.usersService.getUserPosts(friendship.first_user).subscribe(posts => {
+                        posts.forEach(post => {
+                            if (post.file !== null)
+                                post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
+                            this.posts.push(post);
+                        });
+                    });
+
+                }
+
+
 
             });
 

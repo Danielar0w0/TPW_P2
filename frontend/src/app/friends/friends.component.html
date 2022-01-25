@@ -9,7 +9,7 @@
         <ng-template #showFriends>
             <div class="row row-cols-1 row-cols-sm-3 row-cols-md-4 g-3" >
                 <div class="col" *ngFor="let friend of friends">
-                    <FriendPanel [friend]="friend"></FriendPanel>
+                    <FriendPanel [friend]="friend" (dataChanged)="refreshData()"></FriendPanel>
                 </div>
             </div>
         </ng-template>

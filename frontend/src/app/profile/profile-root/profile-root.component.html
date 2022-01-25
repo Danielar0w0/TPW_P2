@@ -15,7 +15,7 @@
 
             <p class="lead" *ngIf="session !== null && userEmail === session.email">
                 <button class="btn btn-lg btn-primary mx-2" (click)="handlePostCreation()">Create post</button>
-                <a href="/profile/edit/" class="btn btn-lg btn-outline-primary mx-2">Edit profile</a>
+                <button disabled href="/profile/edit/" class="btn btn-lg btn-outline-primary mx-2">Edit profile</button>
             </p>
 
             <p class="lead" *ngIf="session !== null && userEmail !== session.email && !friends.includes(userEmail)">
