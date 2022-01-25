@@ -1,11 +1,13 @@
-<div class="py-5">
+<div class="my-5">
     <div class="container">
-        <h1 class="my-5">Search by {{ this.type }}: {{ this.search_term }}</h1>
+        <h2 class="fw-bolder my-5">Search by {{ this.type }}: {{ this.search_term }}</h2>
         <div class="row row-cols-3 row-cols-sm-3 row-cols-md-4 g-3" *ngIf="this.users.length > 0">
             <div *ngFor="let user of this.users" class="col">
                 <div class="card shadow-sm">
-                    <img src="./assets/media/{{ user.image }}"
-                         onerror="this.onerror=null; this.src='./assets/images/user2.png'"/>
+                    <img *ngIf="user.image !== '' && user.image !== null"
+                         src="./assets/media/{{ user.image }}" class="rounded-circle">
+                    <img *ngIf="user.image === '' || user.image === null"
+                         src='./assets/images/user2.png' class="rounded-circle">
 
                     <div class="card-body">
                         <p class="card-text"> {{ user.username }} <br>
@@ -18,21 +20,6 @@
                                 <button class="btn btn-outline-primary me-2"
                                         routerLink='/profile/{{ user.user_email }}'>Profile
                                 </button>
-                                <!--
-                              <div *ngIf="friends.indexOf(user) != -1">
-                                <button class="btn btn-primary">
-                                  Unfollow
-                                </button>
-                              </div>
-
-                              <div *ngIf="friends.indexOf(user) == -1">
-                                <form action="." method="post">
-                                  <input type="hidden" name="add_friend"
-                                         value="{{ user.user_email }}">
-                                  <input type="submit" value="Follow" class="btn btn-primary">
-                                </form>
-                              </div>
-                              -->
                             </div>
                         </div>
                     </div>

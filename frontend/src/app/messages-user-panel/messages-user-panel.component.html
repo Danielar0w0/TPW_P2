@@ -1,12 +1,13 @@
 <div class="col mx-3">
-    <div class="card d-flex justify-content-center text-center" style="border: none">
-        <img src="./assets/media/{{ messagingFriend.image }}"
-             onerror="this.onerror=null;this.src='./assets/images/user2.png';"
-             class="rounded-circle">
+    <div class="card d-flex justify-content-center text-center" style="border: none; background-color: transparent">
+        <img *ngIf="messagingFriend.image !== '' && messagingFriend.image !== null"
+             src="./assets/media/{{ messagingFriend.image }}" class="rounded-circle">
+        <img *ngIf="messagingFriend.image === '' || messagingFriend.image === null"
+             src='./assets/images/user2.png' class="rounded-circle">
         <div class="card-body">
             <p class="card-text"> {{ messagingFriend.username }}</p>
             <p class="card-text"> {{ messagingFriend.user_email }}</p>
-            <a href="/messages/{{ messagingFriend.user_email }}" class="btn btn-lg btn-outline-primary">Messages</a>
+            <a href="/messages/{{ messagingFriend.user_email }}" class="btn btn-lg btn-outline-primary w-100">Messages</a>
         </div>
     </div>
 </div>
