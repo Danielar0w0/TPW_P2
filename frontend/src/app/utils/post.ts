@@ -5,7 +5,7 @@ export class Post {
 
     constructor(
         public post_id: number,
-        public user: User,
+        public user: string,
         public description: string,
         public date: Date,
         public file: string,
