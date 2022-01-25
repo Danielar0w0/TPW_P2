@@ -53,5 +53,4 @@ export class FriendsComponent implements OnInit {
         this.friends = [];
         this.ngOnInit();
     }
-
 }
