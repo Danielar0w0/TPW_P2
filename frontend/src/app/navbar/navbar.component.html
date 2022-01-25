@@ -8,16 +8,16 @@
 
             <ul class="navbar-nav px-4 mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="/feed/">Feed</a>
+                    <a class="nav-link text-light" routerLink="/feed/">Feed</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="/friends/">Friends</a>
+                    <a class="nav-link text-light" routerLink="/friends/">Friends</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="/profile/">Your profile</a>
+                    <a class="nav-link text-light" routerLink="/profile/">Your profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-light" href="/messages/">Messages</a>
+                    <a class="nav-link text-light" routerLink="/messages/">Messages</a>
                 </li>
 
                 <!--
@@ -28,7 +28,7 @@
                 </div>
                 -->
                 <li class="nav-item px-4">
-                    <a class="nav-link text-light" href="/login" (click)="logout()">Logout</a>
+                    <a class="nav-link text-light" routerLink="/login" (click)="logout()">Logout</a>
                 </li>
             </ul>
 
@@ -52,9 +52,9 @@
                 <input type="submit" class="btn btn-primary" value="Search"/>
             </form>
 
-            <a class="d-flex align-items-center" href="/profile">
+            <a class="d-flex align-items-center" routerLink="/profile">
                 <img *ngIf="userProfile.image !== '' && userProfile.image !== null"
-                     src="./assets/media/{{ userProfile.image }}" height="30px" class="rounded-circle">
+                     src="{{ userProfile.image }}" height="30px" class="rounded-circle">
                 <img *ngIf="userProfile.image === '' || userProfile.image === null"
                      src='./assets/images/user2.png' height="30px" class="rounded-circle">
             </a>

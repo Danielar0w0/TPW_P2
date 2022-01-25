@@ -4,6 +4,7 @@ import {FormBuilder} from "@angular/forms";
 import {User} from "../utils/user";
 import {Session} from "../utils/session";
 import {UsersService} from "../services/users/users.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-navbar',
@@ -34,7 +35,11 @@ export class NavbarComponent implements OnInit {
         this.usersService.getUser(userEmail)
             .subscribe({
                 error: err => console.log('Error obtaining user by email in profile-root: ' + err.toString()),
-                next: user => this.userProfile = user
+                next: user => this.userProfile = user,
+                complete: () => {
+                    if (this.userProfile.image)
+                        this.userProfile.image = environment.apiURL + this.userProfile.image.replace("/BubbleAPI", "");
+                }
             });
     }
 

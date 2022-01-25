@@ -60,9 +60,9 @@ export class ProfileRootComponent implements OnInit {
                     next: friendships => {
                         friendships.forEach(friendship => {
                             if (friendship.first_user === this.session?.email)
-                                this.friends.push(friendship.second_user)
-                            else
-                                this.friends.push(friendship.first_user)
+                                this.friends.push(friendship.second_user);
+                            else if (friendship.second_user === this.session?.email)
+                                this.friends.push(friendship.first_user);
 
                         })
                     }

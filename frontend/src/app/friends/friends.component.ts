@@ -31,7 +31,7 @@ export class FriendsComponent implements OnInit {
 
                     friendships.forEach(friendship => {
 
-                        if (friendship.second_user !== this.session?.email) {
+                        if (friendship.first_user === this.session?.email) {
 
                             this.usersService.getUser(friendship.second_user)
                                 .subscribe({
