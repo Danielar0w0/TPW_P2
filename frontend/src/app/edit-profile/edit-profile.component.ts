@@ -3,8 +3,7 @@ import {UsersService} from "../services/users/users.service";
 import {Session} from "../utils/session";
 import {FormBuilder} from "@angular/forms";
 import {InfoModalComponent} from "../info-modal/info-modal.component";
-import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {CreatePostModalComponent} from "../create-post-modal/create-post-modal.component";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
     selector: 'app-edit-profile-root',
@@ -16,7 +15,6 @@ export class EditProfileComponent implements OnInit {
     image: any;
     image_preview: any;
     session!: Session | null;
-    changesCounter: number;
 
     pictureForm = this.formBuilder.group({
         file: ''
@@ -24,14 +22,6 @@ export class EditProfileComponent implements OnInit {
 
     constructor(private usersService: UsersService, private formBuilder: FormBuilder, private modalService: NgbModal) {
         this.session = Session.getCurrentSession();
-        this.changesCounter = 0;
-    }
-
-    handlePostCreation() {
-        const modalReference = this.modalService.open(CreatePostModalComponent);
-        modalReference.result.then(() => {
-            this.changesCounter++;
-        });
     }
 
     updatePreview() {
@@ -56,7 +46,7 @@ export class EditProfileComponent implements OnInit {
         let file = this.pictureForm.get('file').value
 
         this.usersService.updateProfilePic(this.session.email, file).subscribe({
-            error: err => {
+            error: () => {
                 const infoModal = this.modalService.open(InfoModalComponent);
                 infoModal.componentInstance.title = 'Profile Picture';
                 infoModal.componentInstance.body = 'Error updating profile picture.';
