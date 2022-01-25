@@ -20,19 +20,21 @@
                   <p class="card-text text-end" style="color: white">{{ message.content }}</p>
                 </div>
                 <div class="col-1">
-                  <img src="./assets/media/{{ message.sender }}" class="rounded-circle"
-                       style="object-fit:cover; width: 70px; height: 70px;"
-                       onerror="this.onerror=null;this.src='./assets/images/user2.png';">
+                    <img *ngIf="current_user.image !== '' && current_user.image !== null"
+                         src="./assets/media/{{ current_user.image }}" style="object-fit:cover; width: 70px; height: 70px;" class="rounded-circle">
+                    <img *ngIf="current_user.image === '' || current_user.image === null"
+                         src='./assets/images/user2.png' style="object-fit:cover; width: 70px; height: 70px;" class="rounded-circle">
                 </div>
               </div>
             </div>
 
             <div *ngIf="session !== null && message.receiver == session.email">
               <div class="row py-2 my-2">
-                <div class="col-1">
-                  <img src="./assets/media/{{ message.sender }}" class="rounded-circle"
-                       style="object-fit:cover; width: 70px; height: 70px;"
-                       onerror="this.onerror=null;this.src='./assets/images/user2.png';">
+                <div class="col-1 ps-0 me-2">
+                    <img *ngIf="current_user.image !== '' && current_user.image !== null"
+                         src="./assets/media/{{ current_user.image }}" style="object-fit:cover; width: 70px; height: 70px;" class="rounded-circle">
+                    <img *ngIf="current_user.image === '' || current_user.image === null"
+                         src='./assets/images/user2.png' style="object-fit:cover; width: 70px; height: 70px;" class="rounded-circle">
                 </div>
                 <div class="col-3 my-auto py-3 rounded" style="background-color: rgba(0,48,106,0.48);">
                   <p class="card-text" style="color: white"> {{ message.content }}</p>

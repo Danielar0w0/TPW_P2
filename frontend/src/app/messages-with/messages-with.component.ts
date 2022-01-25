@@ -5,7 +5,6 @@ import {ActivatedRoute} from "@angular/router";
 import {Session} from "../utils/session";
 import {UsersService} from "../services/users/users.service";
 import {MessagesService} from "../services/messages/messages.service";
-import {CommentModalComponent} from "../comment-modal/comment-modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {InfoModalComponent} from "../info-modal/info-modal.component";
 
@@ -17,6 +16,7 @@ import {InfoModalComponent} from "../info-modal/info-modal.component";
 export class MessagesWithComponent implements OnInit {
 
     session: Session | null;
+    current_user!: User;
     other_user!: User;
     messages: Message[];
     current_message?: string;
@@ -42,14 +42,21 @@ export class MessagesWithComponent implements OnInit {
 
             if (this.session === undefined || this.session === null) return;
 
+            this.usersService.getUser(this.session.email)
+                .subscribe({
+                    error: err => console.error("Error getting current user: " + err.toString()),
+                    next: user => this.current_user = user
+                });
+
             this.usersService.getUserMessages(this.session.email)
                 .subscribe({
                     error: err => console.error("Error getting messages: " + err.toString()),
                     next: messages => {
-                        messages.forEach(message => this.messages.push(message))
+                        messages.sort(function (m1, m2) { return m1.id - m2.id }).forEach(message => this.messages.push(message))
                     }
                 });
 
+            /*
             this.messagesService.getMessagesFromUser(receiverEmail, this.session.email)
                 .subscribe({
                     error: err => console.error("Error getting messages: " + err.toString()),
@@ -57,9 +64,8 @@ export class MessagesWithComponent implements OnInit {
                         messages.forEach(message => this.messages.push(message))
                     }
                 });
-
+             */
         });
-
     }
 
     sendMessage() {
@@ -77,7 +83,6 @@ export class MessagesWithComponent implements OnInit {
                     this.ngOnInit();
                 }
             })
-
     }
 
 }
