@@ -11,13 +11,13 @@
             <div class="col-2">
 
                 <div class="row mt-5 text-light">
-                    <div class="col-4">
+                    <div class="col-4 mx-2">
                         <img *ngIf="postOwner.image !== '' && postOwner.image !== null"
                              src="./assets/media/{{ postOwner.image }}" style="object-fit: contain; max-height: 50px; max-width: 50px;" class="rounded-circle">
                         <img *ngIf="postOwner.image === '' || postOwner.image === null"
                              src='./assets/images/user2.png' style="object-fit: contain; max-height: 50px; max-width: 50px;" class="rounded-circle">
                     </div>
-                    <div class="col-7">
+                    <div class="col-6">
                         <p class="fw-bold" style="font-size: 1.2rem">{{ postOwner.username }}</p>
                     </div>
                 </div>
