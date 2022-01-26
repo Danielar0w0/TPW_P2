@@ -3,6 +3,7 @@ import {User} from "../utils/user";
 import {Session} from "../utils/session";
 import {MessagesService} from "../services/messages/messages.service";
 import {UsersService} from "../services/users/users.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-messages',
@@ -38,6 +39,8 @@ export class MessagesComponent implements OnInit {
                                     error: err => console.error("Error getting user by receiver email: " + err.toString()),
                                     next: user => {
                                         if (this.users.filter(userFiltered => userFiltered.user_email === user.user_email).length <= 0)
+                                            if (user.image)
+                                                user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
                                             this.users.push(user)
                                     }
                                 });
@@ -48,6 +51,8 @@ export class MessagesComponent implements OnInit {
                                     error: err => console.error("Error getting user by receiver email: " + err.toString()),
                                     next: user => {
                                         if (this.users.filter(userFiltered => userFiltered.user_email === user.user_email).length <= 0)
+                                            if (user.image)
+                                                user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
                                             this.users.push(user)
                                     }
                                 });
@@ -75,6 +80,8 @@ export class MessagesComponent implements OnInit {
                                         console.log("Error obtaining user by friendship: " + err);
                                     },
                                     next: user => {
+                                        if (user.image)
+                                            user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
                                         this.friends.push(user);
                                     }
                                 });
@@ -87,6 +94,8 @@ export class MessagesComponent implements OnInit {
                                         console.log("Error obtaining user by friendship: " + err);
                                     },
                                     next: user => {
+                                        if (user.image)
+                                            user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
                                         this.friends.push(user);
                                     }
                                 });

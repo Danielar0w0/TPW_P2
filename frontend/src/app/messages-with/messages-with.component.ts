@@ -7,6 +7,7 @@ import {UsersService} from "../services/users/users.service";
 import {MessagesService} from "../services/messages/messages.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {InfoModalComponent} from "../info-modal/info-modal.component";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-messages-with',
@@ -37,7 +38,12 @@ export class MessagesWithComponent implements OnInit {
             this.usersService.getUser(receiverEmail)
                 .subscribe({
                     error: err => console.error("Error getting message receiver: " + err.toString()),
-                    next: user => this.other_user = user
+                    next: user => this.other_user = user,
+                    complete: () => {
+                        if (this.other_user.image)
+                            this.other_user.image = environment.apiURL + this.other_user.image.replace("/BubbleAPI", "");
+
+                    }
                 });
 
             if (this.session === undefined || this.session === null) return;
@@ -45,7 +51,12 @@ export class MessagesWithComponent implements OnInit {
             this.usersService.getUser(this.session.email)
                 .subscribe({
                     error: err => console.error("Error getting current user: " + err.toString()),
-                    next: user => this.current_user = user
+                    next: user => this.current_user = user,
+                    complete: () => {
+                        if (this.current_user.image)
+                            this.current_user.image = environment.apiURL + this.current_user.image.replace("/BubbleAPI", "");
+
+                    }
                 });
 
             this.usersService.getUserMessages(this.session.email)

@@ -5,6 +5,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {User} from "../utils/user";
 import {Session} from "../utils/session";
 import {UsersService} from "../services/users/users.service";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'FeedPost',
@@ -24,8 +25,14 @@ export class FeedPostComponent implements OnInit {
         if (!this.post) return;
 
         this.usersService.getUser(this.post.user)
-            .subscribe(user => {
-                this.postOwner = user;
+            .subscribe({
+                error: err => console.error("Error getting user: " + err.toString()),
+                next: user => this.postOwner = user,
+                complete: () => {
+                    if (this.postOwner.image)
+                        this.postOwner.image = environment.apiURL + this.postOwner.image.replace("/BubbleAPI", "");
+
+                }
             });
 
     }
