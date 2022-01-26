@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {User} from "../utils/user";
 import {UsersService} from "../services/users/users.service";
 import {Session} from "../utils/session";
+import {environment} from "../../environments/environment";
 
 @Component({
     selector: 'app-friends',
@@ -39,6 +40,8 @@ export class FriendsComponent implements OnInit {
                                         console.log("Error obtaining user by friendship: " + err);
                                     },
                                     next: user => {
+                                        if (user.image)
+                                            user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
                                         this.friends.push(user);
                                     }
                                 });
@@ -51,6 +54,8 @@ export class FriendsComponent implements OnInit {
                                         console.log("Error obtaining user by friendship: " + err);
                                     },
                                     next: user => {
+                                        if (user.image)
+                                            user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
                                         this.friends.push(user);
                                     }
                                 });

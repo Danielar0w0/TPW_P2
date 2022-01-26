@@ -2,7 +2,7 @@
     <div class="card-body">
 
         <img *ngIf="friend.image !== '' && friend.image !== null"
-             src="./assets/media/{{ friend.image }}" style="object-fit: contain; max-height: 100%; max-width: 100%;" class="rounded-circle">
+             src="{{ friend.image }}" style="object-fit: contain; max-height: 100%; max-width: 100%;" class="rounded-circle">
         <img *ngIf="friend.image === '' || friend.image === null"
              src='./assets/images/user2.png' style="object-fit: contain; max-height: 100%; max-width: 100%;" class="rounded-circle">
 

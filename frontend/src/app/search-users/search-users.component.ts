@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {User} from "../utils/user";
 import {ActivatedRoute} from "@angular/router";
 import {SearchService} from "../services/search/search.service";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-search-users',
@@ -36,8 +37,11 @@ export class SearchUsersComponent implements OnInit {
             this.searchService.performSearch(q, query).subscribe(
                 {
                     next: users => {
-                        this.users = users;
-                        console.log(users);
+                        users.forEach((user: User) => {
+                            if (user.image)
+                                user.image = environment.apiURL + user.image.replace("/BubbleAPI", "");
+                            this.users.push(user);
+                        })
                     },
                     error: err => {
                         window.alert(err.message);

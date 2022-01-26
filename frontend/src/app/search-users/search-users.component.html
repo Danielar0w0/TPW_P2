@@ -5,7 +5,7 @@
             <div *ngFor="let user of this.users" class="col">
                 <div class="card shadow-sm">
                     <img *ngIf="user.image !== '' && user.image !== null"
-                         src="./assets/media/{{ user.image }}" class="rounded-circle">
+                         src="{{ user.image }}" class="rounded-circle">
                     <img *ngIf="user.image === '' || user.image === null"
                          src='./assets/images/user2.png' class="rounded-circle">
 
