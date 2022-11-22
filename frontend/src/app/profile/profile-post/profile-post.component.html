@@ -1,0 +1,35 @@
+<div class="col py-4">
+    <div class="card shadow-sm">
+
+        <img src="{{ post.file }}" class="card-img-top" height="225"
+             style="object-fit: cover" alt="Post Picture">
+        <div class="card-body">
+
+            <p class="card-text"> {{ post.description }}</p>
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div class="btn-group">
+                    <form action="/post_details/{{ post.post_id }}">
+
+                        <button id="view-button" type="submit" class="btn btn-sm btn-primary" routerLink="/post_details/{{ post.post_id }}">View
+                        </button>
+                    </form>
+
+                    <button type="button" class="btn btn-sm btn-outline-primary"
+                            data-toggle="modal" (click)="commentPost()">Comment
+                    </button>
+
+                    <div *ngIf="session !== null && userEmail === session.email">
+                        <button type="button" class="btn btn-sm btn-outline-secondary mx-2"
+                                data-toggle="modal" (click)="deletePost()">
+                            Delete
+                        </button>
+                    </div>
+
+                </div>
+                <small class="text-muted px-1"> {{ post.date | date: "short" }}</small>
+            </div>
+        </div>
+    </div>
+</div>

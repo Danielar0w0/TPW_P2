@@ -1,0 +1,22 @@
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <img *ngIf="friend.image !== '' && friend.image !== null"
+             src="{{ friend.image }}" style="object-fit: contain; max-height: 100%; max-width: 100%;" class="rounded-circle">
+        <img *ngIf="friend.image === '' || friend.image === null"
+             src='./assets/images/user2.png' style="object-fit: contain; max-height: 100%; max-width: 100%;" class="rounded-circle">
+
+        <p class="card-text"> {{ friend.username }} <br>
+            <small class="text-muted">{{ friend.user_email }}</small>
+        </p>
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+                <button class="btn btn-primary" (click)="unfollowUser()">Remove Friend</button>
+                <button class="btn btn-outline-primary"
+                        routerLink="/profile/{{ friend.user_email }}">Profile
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

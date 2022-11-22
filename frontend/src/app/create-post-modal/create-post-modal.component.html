@@ -1,0 +1,27 @@
+<div id="comment_modal">
+
+    <div class="row m-4" id="comment_modal_header">
+
+        <div class="col-11">
+            <h5 class="modal-title" id="exampleModalLongTitle">Create Post</h5>
+        </div>
+        <div class="col-1">
+            <button type="button" class="btn-close me-1" data-dismiss="modal"
+                    aria-label="Close" (click)="closeModal()"></button>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <div class="row mx-4">
+            <p class="fw-bolder p-0 mb-2 mx-0">Upload File</p>
+            <input class="form-control my-4" type="file" id="file" (change)="handleFileInput($event)">
+            <input class="form-control p-1" type="text" name="description" [(ngModel)]="postDescription">
+            <div class="offset-8 mt-3 mb-5">
+                <button class="btn btn-primary" (click)="submitPost()">Create Post</button>
+            </div>
+        </div>
+        <p class="fs-6 fw-light text-center p-0"></p>
+    </div>
+
+</div>

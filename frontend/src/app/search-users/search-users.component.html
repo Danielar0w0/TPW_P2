@@ -1,0 +1,35 @@
+<div class="my-5">
+    <div class="container">
+        <h2 class="fw-bolder my-5">Search by {{ this.type }}: {{ this.search_term }}</h2>
+        <div class="row row-cols-3 row-cols-sm-3 row-cols-md-4 g-3" *ngIf="this.users.length > 0">
+            <div *ngFor="let user of this.users" class="col">
+                <div class="card shadow-sm">
+                    <img *ngIf="user.image !== '' && user.image !== null"
+                         src="{{ user.image }}" class="rounded-circle">
+                    <img *ngIf="user.image === '' || user.image === null"
+                         src='./assets/images/user2.png' class="rounded-circle">
+
+                    <div class="card-body">
+                        <p class="card-text"> {{ user.username }} <br>
+                            <small class="text-muted">{{ user.user_email }}</small>
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+
+                                <button class="btn btn-outline-primary me-2"
+                                        routerLink='/profile/{{ user.user_email }}'>Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="users.length == 0">
+            <p>No results</p>
+        </div>
+
+    </div>
+</div>

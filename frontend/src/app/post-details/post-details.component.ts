@@ -1,26 +1,77 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Post} from "../utils/post";
 import {Comment} from "../utils/comment";
 import {User} from "../utils/user";
+import {ActivatedRoute} from "@angular/router";
+import {PostsService} from "../services/posts/posts.service";
+import {environment} from "../../environments/environment";
+import {CommentsService} from "../services/comments/comments.service";
+import {UsersService} from "../services/users/users.service";
 
 @Component({
-  selector: 'app-post-details',
-  templateUrl: './post-details.component.html',
-  styleUrls: ['./post-details.component.css']
+    selector: 'app-post-details',
+    templateUrl: './post-details.component.html',
+    styleUrls: ['./post-details.component.css']
 })
 export class PostDetailsComponent implements OnInit {
 
-  post!: Post;
-  comments!: Comment[];
+    post!: Post;
+    postOwner: User;
+    comments: Comment[];
 
-  constructor() { }
+    constructor(private route: ActivatedRoute, private postsService: PostsService, private commentsService: CommentsService, private usersService: UsersService) {
+        this.postOwner = User.getNullUser();
+        this.comments = []
+    }
 
-  ngOnInit(): void {
-    // let user = {email: 'test@ua.pt', username: 'test', password: 'test', image: 'trending-design.png', admin: false};
-    // this.post = {post_id: 1, user: user, description: 'New test!', date: new Date(), file: 'shutterstock_1124866904-report-background-scaled.jpg'};
-    let user = new User('test@ua.pt', 'test', 'test', 'trending-design.png', false)
-    this.post = new Post(1, user, 'New test!', new Date(), 'shutterstock_1124866904-report-background-scaled.jpg');
-    this.comments = []
-  }
+    ngOnInit(): void {
+
+        this.route.params.subscribe(parameters => {
+
+            let postId = parameters['id'];
+            if (postId === undefined) return;
+
+            this.postsService.getPostById(postId)
+                .subscribe({
+                    error: err => console.log('Error getting post by id: ' + err.toString()),
+                    next: post => {
+
+                        if (post.file !== null)
+                            post.file = environment.apiURL + post.file.replace("/BubbleAPI", "");
+                        this.post = post;
+
+                        this.usersService.getUser(this.post.user)
+                            .subscribe({
+                                error: err => console.log('Error getting user in post-details: ' + err.toString()),
+                                next: user => this.postOwner = user
+                            });
+
+                    }
+                });
+
+            this.commentsService.getPostComments(postId)
+                .subscribe({
+                    error: err => console.log('Error getting post comments: ' + err.toString()),
+                    next: comments => {
+
+                        comments.forEach(comment => {
+
+                            this.usersService.getUser(comment.user)
+                                .subscribe({
+                                    error: err => console.error("Error getting user by email on Post Details: " + err.toString()),
+                                    next: user => {
+                                        comment.user = user.username;
+                                    }
+                                });
+
+                        })
+
+                        this.comments = comments;
+                    }
+                });
+
+        });
+
+    }
 
 }

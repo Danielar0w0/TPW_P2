@@ -5,36 +5,19 @@
       <img id="image-preview" src="./assets/images/free-love-message-icon-2946-thumb.png" class="rounded"
            style="max-height: 25vh"/>
 
-      <form action="." method="POST" enctype="multipart/form-data">
+      <form (ngSubmit)="updateProfilePic()" enctype="multipart/form-data">
 
         <div class="form-group py-4">
           <h5>Profile picture</h5>
 
           <div class="custom-file pt-4">
-            <input type="file" class="form-control" id="image" name="input_file" accept="image/*" (input)="updatePreview()"/>
+            <input type="file" class="form-control" id="image" name="input_file" accept="image/*" (change)="handleFileInput($event)" formControlName="file"/>
           </div>
 
         </div>
 
         <div class="form-group pt-4">
           <input class="btn btn-primary" type="submit" value="Update picture">
-        </div>
-      </form>
-
-      <form action="." method="POST">
-
-        <div class="form-group py-4">
-          <h5>Password</h5>
-
-          <div class="custom-file pt-4">
-            <input type="password" name="password" class="form-control rounded"
-                   placeholder="Password" aria-label="Password"/>
-          </div>
-
-        </div>
-
-        <div class="form-group pt-4">
-          <input class="btn btn-primary" type="submit" value="Change password">
         </div>
       </form>
 

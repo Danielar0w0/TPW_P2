@@ -2,15 +2,15 @@
   <div id="formContent">
     <div class="fadeIn first">
       <img src="./assets/images/messageIcon2.png" id="icon" alt="User Icon"
-           style="color: black; max-height: 100px; max-width: 100px;"/>
+           style="color: black; max-height: 100px; max-width: 100px;" />
     </div>
 
     <!-- Login Form -->
-    <form action="." method="post" class="form-horizontal justify-content-center">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-horizontal justify-content-center">
       <div class="form-group">
         <label for="username">Username</label>
         <div class="col">
-          <input type="text" class="form-control" id="username">
+          <input type="text" class="form-control" id="username" formControlName="username">
         </div>
       </div>
 
@@ -18,7 +18,7 @@
         <label for="email">Email</label>
         <div class="col">
           <div class="w-100">
-            <input type="text" class="form-control" id="email">
+            <input type="text" class="form-control" id="email" formControlName="email">
           </div>
           <small style="color: grey">Email is required. Please insert a valid email.</small>
         </div>
@@ -27,26 +27,23 @@
       <div class="form-group">
         <label for="password">Password</label>
         <div class="col">
-          <input type="password" class="form-control" id="password">
+          <input type="password" class="form-control" id="password" formControlName="password">
         </div>
       </div>
 
       <div class="form-group">
         <label for="password2">Confirm Password</label>
         <div class="col">
-          <input type="password" class="form-control" id="password2">
+          <input type="password" class="form-control" id="password2" formControlName="password2">
         </div>
       </div>
 
-      <!-- TODO: Form errors -->
-
-      <input type="hidden" name="next" value="/"/>
-      <input type="submit" value="Register" class="fadeIn fourth mt-4"/>
+      <input type="submit" value="Register" class="fadeIn fourth mt-4" />
     </form>
 
     <!-- Remind Passowrd -->
     <div id="formFooter">
-      <a class="underlineHover" href="/login/">Login</a>
+      <a class="underlineHover" routerLink="/login">Login</a>
     </div>
 
   </div>

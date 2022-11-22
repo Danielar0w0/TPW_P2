@@ -1,0 +1,32 @@
+<div *ngIf="post !== undefined">
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <div class="d-flex flex-row">
+                <div class="p-1">
+                    <img src="{{ postOwner.image }}"
+                         style="object-fit: scale-down; max-height: 50px; max-width: 50px;"
+                         onerror="this.onerror=null; this.src='../../assets/images/user2.png'" alt="profile_picture">
+                </div>
+                <div class="p-2 my-auto">
+                    <p class="m-0 p-0"><strong>{{ postOwner.username }}</strong> posted...</p>
+                </div>
+            </div>
+        </div>
+        <img src="{{ post.file }}" class="card-img-top py-3"
+             style="object-fit: scale-down; max-height: 250px" alt="Post Image">
+
+        <div class="card-body">
+            <p class="card-text">{{ post.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                    <button id="view-button" type="submit" class="btn btn-sm btn-primary" routerLink="/post_details/{{ post.post_id }}">View</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" (click)="openModal()">Comment</button>
+                </div>
+                <small class="text-muted px-4">{{ post.date | date: 'short' }}</small>
+            </div>
+        </div>
+    </div>
+
+</div>

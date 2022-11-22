@@ -1,64 +1,64 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-dark py-4 px-4">
-  <div class="container-fluid">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-      <a class="navbar-brand mt-2 mt-lg-0" href="/">
-        <img src="./assets/images/messageIcon.png" height="40"/>
-      </a>
+            <a class="navbar-brand mt-2 mt-lg-0" href="/">
+                <img src="./assets/images/messageIcon.png" height="40"/>
+            </a>
 
-      <!-- TODO: Condition user is authenticated -->
-      <div *ngIf=true>
-        <ul class="navbar-nav px-4 mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link text-light" href="/feed/">Feed</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="/friends/">Friends</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="/profile/">Your profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="/messages/">Messages</a>
-          </li>
+            <ul class="navbar-nav px-4 mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link text-light" routerLink="/feed/">Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" routerLink="/friends/">Friends</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" routerLink="/profile/">Your profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" routerLink="/messages/">Messages</a>
+                </li>
 
-          <!-- TODO: Condition user is admin -->
-          <div *ngIf=false>
-            <li class="nav-item">
-              <a class="nav-link text-light" href="/admin/">Admin panel</a>
-            </li>
-          </div>
+                <!--
+                <div *ngIf=false>
+                  <li class="nav-item">
+                    <a class="nav-link text-light" href="/admin/">Admin panel</a>
+                  </li>
+                </div>
+                -->
+                <li class="nav-item px-4">
+                    <a class="nav-link text-light" routerLink="/login" (click)="logout()">Logout</a>
+                </li>
+            </ul>
 
-          <li class="nav-item px-4">
-            <a class="nav-link text-light" href="/logout/">Logout</a>
-          </li>
-        </ul>
-      </div>
+        </div>
+
+        <!-- TODO: Dynamic profile-root photo -->
+        <div class="d-flex align-items-center">
+            <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="px-4 input-group w-auto">
+
+                <select class="form-select me-3" id="query_type" name="query_type" formControlName="query_type"
+                        placeholder="Filter">
+                    <option value="" disabled selected hidden>Filter</option>
+                    <option [ngValue]="1">Username</option>
+                    <option [ngValue]="2">Email</option>
+                    <option [ngValue]="3">Post Description</option>
+                </select>
+
+                <input type="search" name="query_friend" class="form-control rounded w-25"
+                       formControlName="query" placeholder="Search" aria-label="Search"/>
+
+                <input type="submit" class="btn btn-primary" value="Search"/>
+            </form>
+
+            <a class="d-flex align-items-center" routerLink="/profile">
+                <img *ngIf="userProfile.image !== '' && userProfile.image !== null"
+                     src="{{ userProfile.image }}" height="30px" class="rounded-circle">
+                <img *ngIf="userProfile.image === '' || userProfile.image === null"
+                     src='./assets/images/user2.png' height="30px" class="rounded-circle">
+            </a>
+        </div>
 
     </div>
-
-    <!-- TODO: Add search form -->
-
-    <!-- TODO: Dynamic profile photo -->
-    <div class="d-flex align-items-center">
-      <a class="d-flex align-items-center" href="/profile" id="navbarDropdownMenuLink" role="button"
-         aria-expanded="false">
-        <img src='./assets/images/user2.png' height="30px" class="rounded-circle"
-             onerror="this.onerror=null; this.src='./assets/images/user2.png'"/>
-      </a>
-
-      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-        <li>
-          <a class="dropdown-item" href="/profile/">My profile</a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="#">Settings</a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="/logout">Logout</a>
-        </li>
-      </ul>
-    </div>
-
-  </div>
 </nav>
